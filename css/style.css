@@ -1,0 +1,767 @@
+﻿/**
+ * ============================================================================
+ * ARQUIVO: style.css
+ * ============================================================================
+ * 
+ * PROPÃ“SITO:
+ * Arquivo principal de estilos do site. Aqui estÃ£o os estilos de:
+ * - Header e navegaÃ§Ã£o
+ * - BotÃµes e formulÃ¡rios
+ * - Cards de produtos
+ * - Modais e overlays
+ * - Componentes reutilizÃ¡veis
+ * 
+ * ESTRUTURA:
+ * 1. Header e navegaÃ§Ã£o
+ * 2. Hero section (banner principal)
+ * 3. BotÃµes
+ * 4. FormulÃ¡rios e inputs
+ * 5. Cards
+ * 6. Modais e popups
+ * 7. Footer
+ * 8. Componentes especÃ­ficos
+ * 
+ * COMO USAR:
+ * Este arquivo Ã© importado no HTML assim:
+ * <link rel="stylesheet" href="css/variables.css">
+ * <link rel="stylesheet" href="css/style.css">
+ * <link rel="stylesheet" href="css/responsive.css">
+ * 
+ * ============================================================================
+ */
+
+/* ===================================================================
+   HEADER - CABEÃ‡ALHO DO SITE
+   ===================================================================
+   
+   O header contÃ©m:
+   - Logo da empresa
+   - Menu de navegaÃ§Ã£o
+   - Busca
+   - Ãcones de funÃ§Ã£o
+*/
+
+header {
+  /* Fixo no topo */
+  position: sticky;
+  top: 0;
+  
+  /* Profundidade acima de outros elementos */
+  z-index: var(--z-header);
+  
+  /* Fundo branco com sombra */
+  background-color: var(--cor-fundo-principal);
+  box-shadow: var(--sombra-suave);
+  
+  /* Bordinha na base */
+  border-bottom: 1px solid var(--cor-borda);
+}
+
+/* ConteÃºdo interno do header */
+.header-conteudo {
+  /* Flexbox para alinhar items horizontalmente */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  
+  /* Altura definida */
+  height: var(--altura-header);
+  
+  /* Largura mÃ¡xima e centralizado */
+  max-width: var(--largura-container);
+  margin: 0 auto;
+  padding: 0 var(--espaco-medio);
+}
+
+/* Logo da empresa */
+.logo {
+  /* Flex para centralizar conteÃºdo */
+  display: flex;
+  align-items: center;
+  gap: var(--espaco-pequeno);
+  
+  /* NÃ£o Ã© um link, mas se fosse */
+  color: var(--cor-texto-principal);
+  text-decoration: none;
+  
+  /* Fonte maior para se destacar */
+  font-size: var(--tamanho-fonte-grande);
+  font-weight: var(--peso-fonte-negrito);
+}
+
+/* SVG da logo dentro do header */
+.logo svg {
+  width: 40px;
+  height: 40px;
+}
+
+/* NavegaÃ§Ã£o principal */
+nav {
+  /* Flexbox para itens lado a lado */
+  display: flex;
+  gap: var(--espaco-grande);
+  align-items: center;
+}
+
+/* Links de navegaÃ§Ã£o */
+nav a {
+  /* Cor normal */
+  color: var(--cor-texto-principal);
+  text-decoration: none;
+  
+  /* TransiÃ§Ã£o suave */
+  transition: color var(--tempo-normal) var(--funcao-transicao);
+  
+  /* Peso normal */
+  font-weight: var(--peso-fonte-normal);
+}
+
+/* Links de navegaÃ§Ã£o com hover */
+nav a:hover {
+  color: var(--cor-primaria);
+}
+
+/* Link ativo (pÃ¡gina atual) */
+nav a.ativo {
+  color: var(--cor-primaria);
+  font-weight: var(--peso-fonte-medio);
+  border-bottom: 2px solid var(--cor-primaria);
+  padding-bottom: 2px;
+}
+
+/* ===================================================================
+   SEÃ‡ÃƒO HERÃ“I (BANNER PRINCIPAL)
+   ===================================================================
+   
+   Grande banner no topo da pÃ¡gina inicial com:
+   - Imagem ou cor de fundo
+   - Texto de boas-vindas
+   - Call-to-action (botÃµes)
+*/
+
+.secao-heroi {
+  min-height: 500px;
+  background:
+    linear-gradient(112deg, rgba(8, 25, 52, 0.9) 0%, rgba(8, 25, 52, 0.68) 45%, rgba(8, 25, 52, 0.34) 100%),
+    url('https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?auto=format&fit=crop&w=1800&q=80') center/cover no-repeat;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  color: white;
+  padding: var(--espaco-enorme) var(--espaco-grande);
+}
+
+/* ConteÃºdo dentro da seÃ§Ã£o herÃ³i */
+.heroi-conteudo {
+  text-align: left;
+  max-width: 720px;
+  padding: var(--espaco-grande);
+  border-radius: var(--raio-grande);
+  backdrop-filter: blur(4px);
+}
+
+.heroi-kicker {
+  display: inline-block;
+  margin-bottom: var(--espaco-medio);
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: var(--tamanho-fonte-pequeno);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background-color: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.26);
+}
+
+/* TÃ­tulo da seÃ§Ã£o herÃ³i */
+.heroi-conteudo h1 {
+  font-size: var(--tamanho-fonte-titulo-grande);
+  margin-bottom: var(--espaco-medio);
+  line-height: var(--altura-linha-compacta);
+}
+
+/* DescriÃ§Ã£o da seÃ§Ã£o herÃ³i */
+.heroi-conteudo p {
+  font-size: var(--tamanho-fonte-grande);
+  margin-bottom: var(--espaco-grande);
+  line-height: var(--altura-linha-normal);
+  opacity: 0.95;
+  max-width: 60ch;
+}
+
+/* ===================================================================
+   BOTÃ•ES
+   ===================================================================
+   
+   Estilos para todos os tipos de botÃµes do site
+*/
+
+/* BotÃ£o padrÃ£o */
+button, .botao {
+  /* Altura padronizada */
+  height: var(--altura-botao);
+  
+  /* Padding para espaÃ§o interno */
+  padding: 0 var(--espaco-grande);
+  
+  /* Cores */
+  background-color: var(--cor-primaria);
+  color: white;
+  
+  /* Borda arredondada */
+  border: none;
+  border-radius: var(--raio-medio);
+  
+  /* Fonte */
+  font-size: var(--tamanho-fonte-normal);
+  font-weight: var(--peso-fonte-medio);
+  
+  /* Cursor de mÃ£o ao passar */
+  cursor: pointer;
+  
+  /* TransiÃ§Ã£o suave */
+  transition: all var(--tempo-normal) var(--funcao-transicao);
+  
+  /* Remove estilo padrÃ£o do navegador */
+  border: 2px solid var(--cor-primaria);
+}
+
+/* BotÃ£o com hover (ao passar o mouse) */
+button:hover, .botao:hover {
+  background-color: var(--cor-primaria-claro);
+  border-color: var(--cor-primaria-claro);
+  transform: translateY(-2px); /* Sobe um pouco */
+  box-shadow: var(--sombra-media);
+}
+
+/* BotÃ£o ativo (pressionado) */
+button:active, .botao:active {
+  transform: translateY(0); /* Volta ao normal */
+  box-shadow: var(--sombra-suave);
+}
+
+/* BotÃ£o desabilitado */
+button:disabled, .botao:disabled {
+  background-color: var(--cor-secundaria);
+  border-color: var(--cor-secundaria);
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* BotÃ£o secundÃ¡rio */
+.botao-secundario {
+  background-color: var(--cor-secundaria);
+  border-color: var(--cor-secundaria);
+}
+
+.botao-secundario:hover {
+  background-color: var(--cor-secundaria-claro);
+  border-color: var(--cor-secundaria-claro);
+}
+
+/* BotÃ£o de sucesso */
+.botao-sucesso {
+  background-color: var(--cor-sucesso);
+  border-color: var(--cor-sucesso);
+}
+
+.botao-sucesso:hover {
+  background-color: #218838;
+  border-color: #218838;
+}
+
+/* BotÃ£o de perigo/risco */
+.botao-perigo {
+  background-color: var(--cor-perigo);
+  border-color: var(--cor-perigo);
+}
+
+.botao-perigo:hover {
+  background-color: #c82333;
+  border-color: #c82333;
+}
+
+/* BotÃ£o sem fundo (contorno) */
+.botao-contorno {
+  background-color: transparent;
+  color: var(--cor-primaria);
+  border: 2px solid var(--cor-primaria);
+}
+
+.botao-contorno:hover {
+  background-color: var(--cor-primaria-muito-claro);
+  border-color: var(--cor-primaria);
+}
+
+.secao-heroi .botao-contorno {
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.75);
+}
+
+.secao-heroi .botao-contorno:hover {
+  background-color: rgba(255, 255, 255, 0.14);
+  border-color: #ffffff;
+}
+
+/* BotÃ£o pequeno */
+.botao-pequeno {
+  height: 32px;
+  padding: 0 var(--espaco-medio);
+  font-size: var(--tamanho-fonte-pequeno);
+}
+
+/* BotÃ£o grande */
+.botao-grande {
+  height: 48px;
+  padding: 0 var(--espaco-muito-grande);
+  font-size: var(--tamanho-fonte-grande);
+}
+
+/* BotÃ£o que ocupa a largura toda */
+.botao-bloco {
+  width: 100%;
+  display: block;
+}
+
+/* Grupo de botÃµes lado a lado */
+.grupo-botoes {
+  display: flex;
+  gap: var(--espaco-medio);
+  flex-wrap: wrap;
+}
+
+/* ===================================================================
+   FORMULÃRIOS E INPUTS
+   ===================================================================
+   
+   Estilos para campos de entrada de dados
+*/
+
+/* Container do formulÃ¡rio */
+.formulario {
+  display: flex;
+  flex-direction: column;
+  gap: var(--espaco-grande);
+}
+
+/* Grupo de campo (label + input) */
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--espaco-pequeno);
+}
+
+/* Labels (etiquetas) */
+label {
+  font-weight: var(--peso-fonte-medio);
+  color: var(--cor-texto-principal);
+  font-size: var(--tamanho-fonte-normal);
+}
+
+/* Inputs, textareas, selects */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+input[type="search"],
+textarea,
+select {
+  /* Tamanho e padding */
+  width: 100%;
+  padding: var(--espaco-meio);
+  
+  /* Borda */
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-medio);
+  
+  /* Fundo */
+  background-color: var(--cor-fundo-principal);
+  color: var(--cor-texto-principal);
+  
+  /* Fonte */
+  font-family: var(--fonte-principal);
+  font-size: var(--tamanho-fonte-normal);
+  
+  /* TransiÃ§Ã£o */
+  transition: all var(--tempo-normal) var(--funcao-transicao);
+}
+
+/* Input com foco (quando clica nele) */
+input:focus,
+textarea:focus,
+select:focus {
+  /* Remove borda padrÃ£o do navegador */
+  outline: none;
+  
+  /* Nova borda colorida */
+  border-color: var(--cor-primaria);
+  
+  /* Sombra */
+  box-shadow: 0 0 0 3px var(--cor-primaria-muito-claro);
+}
+
+/* Textarea tem altura mÃ­nima */
+textarea {
+  resize: vertical; /* Permite redimensionar na vertical */
+  min-height: 120px;
+}
+
+/* ===================================================================
+   CARDS - CAIXAS DE PRODUTOS
+   ===================================================================
+   
+   Estilos para os cards que mostram cada produto
+*/
+
+/* Container principal de cards */
+.grid-produtos {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--espaco-grande);
+  padding: var(--espaco-grande);
+}
+
+/* Card individual de produto */
+.card-produto {
+  /* Borda e sombra */
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-grande);
+  background-color: var(--cor-fundo-principal);
+  box-shadow: var(--sombra-suave);
+  
+  /* TransiÃ§Ã£o */
+  transition: all var(--tempo-normal) var(--funcao-transicao);
+  
+  /* Overflow para as imagens nÃ£o ultrapassarem bordas arredondadas */
+  overflow: hidden;
+  
+  /* Display flex para organizar conteÃºdo */
+  display: flex;
+  flex-direction: column;
+}
+
+/* Card com hover (ao passar o mouse) */
+.card-produto:hover {
+  transform: translateY(-8px);
+  box-shadow: var(--sombra-forte);
+  border-color: var(--cor-primaria);
+}
+
+/* Imagem do produto */
+.card-imagem {
+  width: 100%;
+  height: 250px;
+  object-fit: cover;
+  background-color: var(--cor-fundo-secundario);
+}
+
+/* ConteÃºdo do card */
+.card-conteudo {
+  padding: var(--espaco-grande);
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* TÃ­tulo do produto */
+.card-titulo {
+  font-size: var(--tamanho-fonte-grande);
+  font-weight: var(--peso-fonte-negrito);
+  margin-bottom: var(--espaco-pequeno);
+  line-height: var(--altura-linha-normal);
+}
+
+/* DescriÃ§Ã£o do produto */
+.card-descricao {
+  color: var(--cor-texto-secundario);
+  font-size: var(--tamanho-fonte-pequeno);
+  margin-bottom: var(--espaco-medio);
+  flex-grow: 1;
+}
+
+/* Categoria do produto */
+.card-categoria {
+  display: inline-block;
+  background-color: var(--cor-primaria-muito-claro);
+  color: var(--cor-primaria);
+  padding: 4px 12px;
+  border-radius: var(--raio-pequeno);
+  font-size: var(--tamanho-fonte-pequeno);
+  margin-bottom: var(--espaco-medio);
+  font-weight: var(--peso-fonte-medio);
+}
+
+/* PreÃ§o do produto */
+.card-preco {
+  font-size: var(--tamanho-fonte-muito-grande);
+  font-weight: var(--peso-fonte-negrito);
+  color: var(--cor-primaria);
+  margin-bottom: var(--espaco-pequeno);
+}
+
+/* PreÃ§o original (riscado quando tem desconto) */
+.card-preco-original {
+  font-size: var(--tamanho-fonte-normal);
+  color: var(--cor-texto-secundario);
+  text-decoration: line-through;
+  margin-right: var(--espaco-pequeno);
+}
+
+/* Selo de desconto */
+.badge-desconto {
+  display: inline-block;
+  background-color: var(--cor-perigo);
+  color: white;
+  padding: 4px 8px;
+  border-radius: var(--raio-pequeno);
+  font-size: var(--tamanho-fonte-pequeno);
+  font-weight: var(--peso-fonte-negrito);
+  margin-left: var(--espaco-pequeno);
+}
+
+/* Selo de fora de estoque */
+.badge-fora-estoque {
+  display: inline-block;
+  background-color: var(--cor-aviso);
+  color: var(--cor-texto-principal);
+  padding: 4px 8px;
+  border-radius: var(--raio-pequeno);
+  font-size: var(--tamanho-fonte-pequeno);
+  font-weight: var(--peso-fonte-negrito);
+}
+
+/* BotÃµes no card */
+.card-botoes {
+  display: flex;
+  gap: var(--espaco-pequeno);
+  margin-top: auto;
+}
+
+/* ===================================================================
+   MODAIS - JANELAS POP-UP
+   ===================================================================
+   
+   Estilos para janelas que aparecem sobre o conteÃºdo
+*/
+
+/* Fundo escuro (backdrop) */
+.modal-backdrop {
+  /* Posicionado fixo ocupando toda a tela */
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  
+  /* Fundo escuro transparente */
+  background-color: rgba(0, 0, 0, 0.5);
+  
+  /* CentralizaÃ§Ã£o */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  /* Profundidade */
+  z-index: var(--z-modal);
+  
+  /* AnimaÃ§Ã£o de entrada */
+  animation: fadeIn var(--tempo-normal) var(--funcao-transicao);
+}
+
+/* Modal em si (a caixa) */
+.modal {
+  /* Fundo branco */
+  background-color: var(--cor-fundo-principal);
+  
+  /* Arredondado */
+  border-radius: var(--raio-grande);
+  
+  /* Sombra forte */
+  box-shadow: var(--sombra-forte);
+  
+  /* Tamanho mÃ¡ximo */
+  max-width: 90%;
+  max-height: 90vh;
+  width: 500px;
+  
+  /* ConteÃºdo com scroll se necessÃ¡rio */
+  overflow-y: auto;
+  
+  /* AnimaÃ§Ã£o de entrada */
+  animation: slideUp var(--tempo-normal) var(--funcao-transicao);
+}
+
+/* Header do modal */
+.modal-header {
+  padding: var(--espaco-grande);
+  border-bottom: 1px solid var(--cor-borda);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* TÃ­tulo do modal */
+.modal-titulo {
+  font-size: var(--tamanho-fonte-grande);
+  font-weight: var(--peso-fonte-negrito);
+}
+
+/* BotÃ£o fechar do modal */
+.modal-fechar {
+  background-color: transparent;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: var(--cor-texto-secundario);
+  padding: 0;
+  height: auto;
+}
+
+.modal-fechar:hover {
+  color: var(--cor-texto-principal);
+}
+
+/* Corpo do modal */
+.modal-corpo {
+  padding: var(--espaco-grande);
+}
+
+/* Footer do modal (com botÃµes) */
+.modal-footer {
+  padding: var(--espaco-grande);
+  border-top: 1px solid var(--cor-borda);
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--espaco-medio);
+}
+
+/* ===================================================================
+   FOOTER - RODAPÃ‰
+   ===================================================================
+   
+   SeÃ§Ã£o final da pÃ¡gina com informaÃ§Ãµes de contato
+*/
+
+footer {
+  /* Fundo escuro */
+  background-color: var(--cor-fundo-secundario);
+  border-top: 1px solid var(--cor-borda);
+  
+  /* EspaÃ§amento */
+  padding: var(--espaco-muito-grande) var(--espaco-grande);
+  
+  /* Margem superior */
+  margin-top: var(--espaco-enorme);
+}
+
+/* ConteÃºdo do footer */
+.footer-conteudo {
+  max-width: var(--largura-container);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: var(--espaco-grande);
+}
+
+/* SeÃ§Ã£o individual do footer */
+.footer-secao h3 {
+  font-size: var(--tamanho-fonte-grande);
+  margin-bottom: var(--espaco-medio);
+}
+
+.footer-secao a {
+  display: block;
+  margin-bottom: var(--espaco-pequeno);
+  color: var(--cor-texto-secundario);
+}
+
+.footer-secao a:hover {
+  color: var(--cor-primaria);
+}
+
+/* Copyright no footer */
+.footer-copyright {
+  text-align: center;
+  margin-top: var(--espaco-muito-grande);
+  padding-top: var(--espaco-muito-grande);
+  border-top: 1px solid var(--cor-borda);
+  color: var(--cor-texto-secundario);
+  font-size: var(--tamanho-fonte-pequeno);
+}
+
+/* ===================================================================
+   ANIMAÃ‡Ã•ES
+   ===================================================================
+   
+   DefiniÃ§Ã£o de animaÃ§Ãµes reutilizÃ¡veis
+*/
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(30px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(-30px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* ===================================================================
+   MENSAGENS DE FEEDBACK
+   ===================================================================
+   
+   Para mostrar mensagens de sucesso, erro, aviso
+*/
+
+.mensagem {
+  padding: var(--espaco-grande);
+  border-radius: var(--raio-medio);
+  margin-bottom: var(--espaco-medio);
+  font-weight: var(--peso-fonte-medio);
+  animation: slideDown var(--tempo-normal) var(--funcao-transicao);
+}
+
+.mensagem-sucesso {
+  background-color: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+.mensagem-erro {
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
+
+.mensagem-aviso {
+  background-color: #fff3cd;
+  color: #856404;
+  border: 1px solid #ffeeba;
+}
+
+.mensagem-info {
+  background-color: #d1ecf1;
+  color: #0c5460;
+  border: 1px solid #bee5eb;
+}
+

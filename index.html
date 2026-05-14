@@ -1,0 +1,127 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Loja de produtos com ofertas e contato rápido.">
+  <title>Início - MeuSite</title>
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+  <header>
+    <div class="header-conteudo">
+      <div class="logo">
+        <svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+          <rect width="40" height="40" fill="#007BFF" rx="4"/>
+          <circle cx="12" cy="12" r="6" fill="#FFFFFF"/>
+          <circle cx="28" cy="12" r="6" fill="#FFFFFF"/>
+          <rect x="10" y="22" width="20" height="12" fill="#FFFFFF" rx="2"/>
+        </svg>
+        <span>MeuSite</span>
+      </div>
+      <nav>
+        <a href="index.html" class="ativo">Início</a>
+        <a href="products.html">Produtos</a>
+        <a href="#contato">Contato</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="secao-heroi">
+      <div class="heroi-conteudo">
+        <span class="heroi-kicker">Sua loja de ferramentas e utilidades</span>
+        <h1>Equipamentos para acelerar seu trabalho</h1>
+        <p>Ajudamos empresas e profissionais a encontrar produtos de qualidade com entrega rápida e ofertas atualizadas.</p>
+        <div class="grupo-botoes">
+          <a href="products.html" class="botao botao-grande">Comece a comprar</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="container" style="padding: var(--espaco-enorme) var(--espaco-grande);">
+      <h2 style="text-align: center; margin-bottom: var(--espaco-grande);">Produtos em Oferta</h2>
+      <div id="ultimos-produtos" class="grid-produtos">
+        <p style="text-align: center; color: var(--cor-texto-secundario); grid-column: 1 / -1;">Carregando produtos...</p>
+      </div>
+      <div style="text-align: center; margin-top: var(--espaco-grande);">
+        <a href="products.html" class="botao">Ver mais</a>
+      </div>
+    </section>
+  </main>
+
+  <footer id="contato">
+    <div class="footer-conteudo">
+      <div class="footer-secao">
+        <h3>Sobre</h3>
+        <p>Loja de produtos com ofertas, atendimento rápido e navegação simples.</p>
+      </div>
+      <div class="footer-secao">
+        <h3>Links</h3>
+        <a href="index.html">Início</a>
+        <a href="products.html">Produtos</a>
+      </div>
+      <div class="footer-secao">
+        <h3>Contato</h3>
+        <a href="mailto:contato@empresa.com">contato@empresa.com</a>
+        <a href="tel:+5511999999999">(11) 99999-9999</a>
+      </div>
+      <div class="footer-secao">
+        <h3>Administração</h3>
+        <a href="admin.html" style="font-size: 12px; opacity: .75;">Acesso administrativo</a>
+      </div>
+    </div>
+    <div class="footer-copyright">
+      <p>&copy; 2026 Sua Empresa. Todos os direitos reservados.</p>
+    </div>
+  </footer>
+
+  <script src="js/config.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+    function carregarProdutosEmOferta() {
+      const produtos = Storage.getAllProducts().filter((p) =>
+        p.visivel !== false &&
+        p.desconto && p.desconto > 0 &&
+        p.destaqueOferta === true
+      );
+      produtos.sort((a, b) => b.desconto - a.desconto);
+      const ofertas = produtos.slice(0, 8);
+      const container = document.getElementById('ultimos-produtos');
+
+      if (ofertas.length === 0) {
+        container.innerHTML = '<p style="text-align:center;color:var(--cor-texto-secundario);grid-column:1/-1;">Nenhuma oferta disponível no momento.</p>';
+        return;
+      }
+
+      container.innerHTML = '';
+      ofertas.forEach((produto) => {
+        const precoComDesconto = CONFIG.calculateDiscountedPrice(produto.preco, produto.desconto);
+        const card = document.createElement('div');
+        card.className = 'card-produto';
+        card.innerHTML = `
+          ${produto.imagem ? `<img src="${produto.imagem}" alt="${produto.nome}" class="card-imagem">` : `<div class="card-imagem" style="display:flex;align-items:center;justify-content:center;color:var(--cor-texto-secundario);">Sem imagem</div>`}
+          <div class="card-conteudo">
+            <h3 class="card-titulo">${produto.nome}</h3>
+            <p class="card-descricao">${produto.descricao || 'Sem descrição'}</p>
+            <div>
+              <span class="card-preco-original">${CONFIG.formatCurrency(produto.preco)}</span>
+              <span class="card-preco">${CONFIG.formatCurrency(precoComDesconto)}</span>
+              <span class="badge-desconto">-${produto.desconto}%</span>
+            </div>
+            <div class="card-botoes" style="margin-top:auto;">
+              <a href="product.html?id=${produto.id}" class="botao botao-pequeno" style="flex:1;text-align:center;">Ver detalhes</a>
+            </div>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', carregarProdutosEmOferta);
+  </script>
+</body>
+</html>

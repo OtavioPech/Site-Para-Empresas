@@ -1,0 +1,621 @@
+/**
+ * ============================================================================
+ * ARQUIVO: responsive.css
+ * ============================================================================
+ * 
+ * PROPÓSITO:
+ * Este arquivo contém TODAS as regras de responsividade do site.
+ * Aqui é onde ajustamos o layout para diferentes tamanhos de tela.
+ * 
+ * CONCEITO - MOBILE FIRST:
+ * Começamos com o design para celular (menor tela)
+ * Depois adicionamos mais espaço conforme a tela fica maior
+ * Isto garante que funcione bem SEMPRE
+ * 
+ * BREAKPOINTS (Tamanhos de mudança de layout):
+ * - 480px: Celulares pequenos
+ * - 768px: Tablets
+ * - 1024px: Desktops
+ * - 1440px: Desktops grandes
+ * 
+ * COMO FUNCIONA:
+ * @media (max-width: 768px) {
+ *   /* Estas regras só se aplicam em telas ATÉ 768px */
+ * }
+ * 
+ * @media (min-width: 768px) and (max-width: 1024px) {
+ *   /* Estas regras se aplicam entre 768px e 1024px */
+ * }
+ * 
+ * ============================================================================
+ */
+
+/* ===================================================================
+   VARIÁVEIS RESPONSIVAS
+   ===================================================================
+   
+   Alguns navegadores modernos suportam variáveis responsivas,
+   mas para compatibilidade, usamos @media queries
+*/
+
+/* ===================================================================
+   MOBILE - ATÉ 480px (CELULARES PEQUENOS)
+   ===================================================================
+   
+   Telas muito pequenas: iPhone 6, 7, 8, etc
+*/
+
+@media (max-width: 480px) {
+  
+  /* Header é mais compacto */
+  header {
+    position: fixed;
+    width: 100%;
+    top: 0;
+  }
+  
+  .header-conteudo {
+    height: 50px; /* Menor no mobile */
+    padding: 0 var(--espaco-pequeno);
+  }
+  
+  /* Logo menor */
+  .logo {
+    font-size: var(--tamanho-fonte-normal);
+    gap: 4px;
+  }
+  
+  .logo svg {
+    width: 32px;
+    height: 32px;
+  }
+  
+  /* Navegação em coluna (dropdown) */
+  nav {
+    display: none; /* Esconde por padrão */
+  }
+  
+  /* Body com espaço pro header fixo */
+  body {
+    padding-top: 50px;
+  }
+  
+  /* Seção herói menor */
+  .secao-heroi {
+    min-height: 250px;
+    padding: var(--espaco-grande) var(--espaco-pequeno);
+  }
+  
+  .heroi-conteudo {
+    text-align: center;
+    padding: var(--espaco-medio);
+  }
+  
+  .heroi-conteudo h1 {
+    font-size: var(--tamanho-fonte-muito-grande);
+  }
+  
+  .heroi-conteudo p {
+    font-size: var(--tamanho-fonte-normal);
+  }
+  
+  /* Grid de produtos: 1 coluna no mobile */
+  .grid-produtos {
+    grid-template-columns: 1fr;
+    gap: var(--espaco-medio);
+    padding: var(--espaco-medio);
+  }
+  
+  /* Card menor */
+  .card-produto {
+    margin-bottom: var(--espaco-pequeno);
+  }
+  
+  .card-imagem {
+    height: 200px;
+  }
+  
+  .card-conteudo {
+    padding: var(--espaco-medio);
+  }
+  
+  /* Botões menores no mobile */
+  button, .botao {
+    padding: 0 var(--espaco-medio);
+    font-size: var(--tamanho-fonte-normal);
+  }
+  
+  /* Grupo de botões em coluna no mobile */
+  .grupo-botoes {
+    flex-direction: column;
+  }
+  
+  .grupo-botoes .botao {
+    width: 100%;
+    text-align: center;
+  }
+  
+  .botao-bloco {
+    width: 100%;
+  }
+  
+  /* Modal ocupa quase toda a tela */
+  .modal {
+    width: 90% !important;
+    max-width: none;
+  }
+  
+  /* Container tem padding menor */
+  .container {
+    padding: 0 var(--espaco-pequeno);
+  }
+  
+  /* Footer em uma coluna */
+  .footer-conteudo {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ===================================================================
+   TABLET - 481px ATÉ 768px
+   ===================================================================
+   
+   Telas médias: iPad, tablets, celulares em paisagem
+*/
+
+@media (min-width: 481px) and (max-width: 768px) {
+  
+  /* Header normal */
+  .header-conteudo {
+    height: var(--altura-header);
+  }
+  
+  /* Navegação pode ser visível (com ajustes) */
+  nav {
+    gap: var(--espaco-medio);
+    font-size: var(--tamanho-fonte-pequeno);
+  }
+  
+  /* Seção herói adaptada */
+  .secao-heroi {
+    min-height: 300px;
+    padding: var(--espaco-grande);
+  }
+  
+  .heroi-conteudo h1 {
+    font-size: var(--tamanho-fonte-titulo);
+  }
+  
+  .heroi-conteudo p {
+    font-size: var(--tamanho-fonte-normal);
+  }
+  
+  /* Grid: 2 colunas em tablet */
+  .grid-produtos {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--espaco-grande);
+    padding: var(--espaco-grande);
+  }
+  
+  .card-imagem {
+    height: 220px;
+  }
+  
+  /* Modal adaptado para tablet */
+  .modal {
+    width: 85%;
+    max-width: 600px;
+  }
+  
+  /* Container mais estreito em tablet */
+  .container {
+    max-width: 90%;
+  }
+}
+
+/* ===================================================================
+   DESKTOP - 769px ATÉ 1024px
+   ===================================================================
+   
+   Telas maiores: computadores pequenos, monitores 1024px
+*/
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  
+  /* Header padrão */
+  .header-conteudo {
+    height: var(--altura-header);
+  }
+  
+  /* Navegação completa */
+  nav {
+    gap: var(--espaco-grande);
+  }
+  
+  /* Seção herói maior */
+  .secao-heroi {
+    min-height: 350px;
+  }
+  
+  /* Grid: 3 colunas em desktop pequeno */
+  .grid-produtos {
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--espaco-grande);
+    padding: var(--espaco-grande);
+  }
+  
+  .card-imagem {
+    height: 240px;
+  }
+  
+  /* Modal maior */
+  .modal {
+    width: 80%;
+    max-width: 650px;
+  }
+  
+  /* Container largura normal */
+  .container {
+    max-width: 900px;
+  }
+}
+
+/* ===================================================================
+   DESKTOP GRANDE - 1025px OU MAIS
+   ===================================================================
+   
+   Telas grandes: desktops, laptops com resolução alta
+*/
+
+@media (min-width: 1025px) {
+  
+  /* Header padrão */
+  .header-conteudo {
+    height: var(--altura-header);
+  }
+  
+  /* Navegação completa com espaçamento maior */
+  nav {
+    gap: var(--espaco-grande);
+  }
+  
+  /* Seção herói com altura máxima */
+  .secao-heroi {
+    min-height: 400px;
+  }
+  
+  .heroi-conteudo h1 {
+    font-size: var(--tamanho-fonte-titulo-grande);
+  }
+  
+  /* Grid: 4 colunas em desktop grande */
+  .grid-produtos {
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--espaco-grande);
+    padding: var(--espaco-grande);
+  }
+  
+  .card-imagem {
+    height: 280px;
+  }
+  
+  /* Modal tamanho máximo */
+  .modal {
+    width: 500px;
+  }
+  
+  /* Container na largura máxima */
+  .container {
+    max-width: var(--largura-container);
+  }
+}
+
+/* ===================================================================
+   DESKTOP ULTRA-GRANDE - 1441px OU MAIS
+   ===================================================================
+   
+   Telas muito grandes: desktops com múltiplos monitores, TVs
+*/
+
+@media (min-width: 1441px) {
+  
+  /* Mantém as proporções mas com espaço extra */
+  .grid-produtos {
+    grid-template-columns: repeat(5, 1fr);
+    gap: var(--espaco-muito-grande);
+  }
+  
+  .container {
+    max-width: 1400px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+/* ===================================================================
+   ORIENTAÇÃO - RETRATO vs PAISAGEM
+   ===================================================================
+   
+   Ajustes baseados na orientação do dispositivo
+*/
+
+/* Landscape (paisagem) - celular deitado */
+@media (max-height: 500px) and (orientation: landscape) {
+  
+  /* Diminui altura de componentes */
+  .header-conteudo {
+    height: 40px;
+  }
+  
+  .secao-heroi {
+    min-height: 250px;
+    padding: var(--espaco-medio) var(--espaco-grande);
+  }
+  
+  .heroi-conteudo h1 {
+    font-size: var(--tamanho-fonte-muito-grande);
+    margin-bottom: var(--espaco-pequeno);
+  }
+  
+  .heroi-conteudo p {
+    margin-bottom: var(--espaco-pequeno);
+  }
+}
+
+/* ===================================================================
+   ACESSIBILIDADE - PREFERÊNCIA DE REDUÇÃO DE MOVIMENTO
+   ===================================================================
+   
+   Para usuários que preferem menos animações
+*/
+
+@media (prefers-reduced-motion: reduce) {
+  
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ===================================================================
+   ACESSIBILIDADE - MODO ESCURO DO SISTEMA
+   ===================================================================
+   
+   Se o usuário tem modo escuro ativado no sistema operacional
+*/
+
+@media (prefers-color-scheme: dark) {
+  
+  /* Aviso: este é um exemplo básico
+     Para um tema escuro completo, seria necessário mais ajustes
+  */
+  
+  :root {
+    color-scheme: dark;
+  }
+}
+
+/* ===================================================================
+   IMPRESSÃO - QUANDO O USUÁRIO IMPRIME A PÁGINA
+   ===================================================================
+   
+   Estilos especiais para quando o site é impresso
+*/
+
+@media print {
+  
+  /* Esconde header e footer */
+  header, footer {
+    display: none;
+  }
+  
+  /* Remove sombras (não são vistas em preto e branco) */
+  * {
+    box-shadow: none !important;
+    background-image: none !important;
+  }
+  
+  /* Links visíveis */
+  a {
+    text-decoration: underline;
+  }
+  
+  /* Evita quebra de página no meio de cards */
+  .card-produto {
+    page-break-inside: avoid;
+  }
+  
+  /* Texto em cores que imprimem bem */
+  body {
+    color: black;
+    background-color: white;
+  }
+}
+
+/* ===================================================================
+   UTILITÁRIOS RESPONSIVOS
+   ===================================================================
+   
+   Classes que se comportam diferente em cada tamanho de tela
+*/
+
+/* Mostrar apenas em mobile */
+.mostrar-mobile {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .mostrar-mobile {
+    display: block;
+  }
+}
+
+/* Mostrar apenas em desktop */
+.mostrar-desktop {
+  display: block;
+}
+
+@media (max-width: 768px) {
+  .mostrar-desktop {
+    display: none;
+  }
+}
+
+/* Esconder em mobile */
+.esconder-mobile {
+  display: block;
+}
+
+@media (max-width: 768px) {
+  .esconder-mobile {
+    display: none;
+  }
+}
+
+/* Esconder em desktop */
+.esconder-desktop {
+  display: none;
+}
+
+@media (min-width: 1025px) {
+  .esconder-desktop {
+    display: block;
+  }
+}
+
+/* ===================================================================
+   TIPOGRAFIA RESPONSIVA
+   ===================================================================
+   
+   Tamanhos de fonte que se adaptam ao tamanho da tela
+*/
+
+@media (max-width: 768px) {
+  
+  h1 {
+    font-size: var(--tamanho-fonte-muito-grande);
+  }
+  
+  h2 {
+    font-size: var(--tamanho-fonte-grande);
+  }
+  
+  h3 {
+    font-size: var(--tamanho-fonte-normal);
+  }
+}
+
+/* ===================================================================
+   ESPAÇAMENTOS RESPONSIVOS
+   ===================================================================
+   
+   Margens e paddings que se adaptam
+*/
+
+@media (max-width: 480px) {
+  
+  .container {
+    padding-left: var(--espaco-pequeno);
+    padding-right: var(--espaco-pequeno);
+  }
+  
+  .grid-produtos {
+    gap: var(--espaco-medio);
+    padding: var(--espaco-pequeno);
+  }
+}
+
+@media (max-width: 768px) {
+  
+  .grid-produtos {
+    gap: var(--espaco-grande);
+    padding: var(--espaco-medio);
+  }
+}
+
+/* ===================================================================
+   ELEMENTOS ESPECÍFICOS RESPONSIVOS
+   ===================================================================
+*/
+
+/* Formulários em mobile */
+@media (max-width: 768px) {
+  
+  .formulario {
+    gap: var(--espaco-medio);
+  }
+  
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="number"],
+  input[type="search"],
+  textarea,
+  select {
+    padding: var(--espaco-pequeno);
+    font-size: 16px; /* Evita zoom automático em iOS */
+  }
+}
+
+/* Footer responsivo */
+@media (max-width: 768px) {
+  
+  footer {
+    padding: var(--espaco-grande) var(--espaco-pequeno);
+  }
+  
+  .footer-conteudo {
+    grid-template-columns: 1fr;
+    gap: var(--espaco-grande);
+  }
+  
+  .footer-copyright {
+    font-size: var(--tamanho-fonte-pequeno);
+  }
+}
+
+/* Modal responsivo para telas pequenas */
+@media (max-width: 480px) {
+  
+  .modal {
+    width: 95% !important;
+    max-width: none !important;
+    max-height: 95vh;
+  }
+  
+  .modal-header {
+    padding: var(--espaco-medio);
+  }
+  
+  .modal-corpo {
+    padding: var(--espaco-medio);
+  }
+  
+  .modal-footer {
+    padding: var(--espaco-medio);
+    flex-direction: column;
+  }
+  
+  .modal-footer button {
+    width: 100%;
+  }
+}
+
+/* ===================================================================
+   SCROLL BEHAVIOR - COMPORTAMENTO DO SCROLL
+   ===================================================================
+   
+   Scroll suave ao clicar em links internos
+*/
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* Desativa em dispositivos que não suportam bem */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}

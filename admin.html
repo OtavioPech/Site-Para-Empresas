@@ -1,0 +1,458 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Painel administrativo de produtos.">
+  <title>Administração - MeuSite</title>
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/responsive.css">
+  <style>
+    .admin-container { display: grid; grid-template-columns: 250px 1fr; min-height: 100vh; background: #e5e7eb; }
+    .admin-sidebar { background: #1f2937; color: #fff; padding: var(--espaco-grande); position: sticky; top: 0; height: 100vh; }
+    .admin-sidebar ul { list-style: none; padding: 0; }
+    .admin-sidebar .menu-item { display: block; width: 100%; margin-bottom: 8px; padding: 10px 12px; background: rgba(255,255,255,.1); color: #fff; border: 0; border-radius: 8px; text-align: left; text-decoration: none; cursor: pointer; }
+    .admin-sidebar .menu-item:hover { background: rgba(255,255,255,.2); }
+    .admin-sidebar .menu-item.ativo { background: #0b61d8; }
+    .admin-conteudo { background: #f3f4f6; color: #111827; padding: var(--espaco-grande); }
+    .admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--espaco-grande); padding-bottom: var(--espaco-grande); border-bottom: 1px solid #d1d5db; }
+    .admin-aba-conteudo { display: none; }
+    .admin-aba-conteudo.ativa { display: block; }
+    .card-box { background: #fff; border: 1px solid #d1d5db; border-radius: 12px; padding: var(--espaco-grande); }
+    .grid-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: var(--espaco-grande); margin-bottom: var(--espaco-grande); }
+    .stat-card { background: #fff; border: 1px solid #d1d5db; border-radius: 10px; padding: var(--espaco-grande); }
+    .stat-card h3 { margin-bottom: 8px; font-size: 12px; color: #6b7280; text-transform: uppercase; }
+    .stat-card .numero { font-size: 32px; font-weight: 700; color: #0b61d8; }
+    .tabela-produtos { width: 100%; border-collapse: collapse; background: #fff; }
+    .tabela-produtos th, .tabela-produtos td { padding: 12px; border-bottom: 1px solid #e5e7eb; text-align: left; }
+    .tabela-produtos th { background: #f9fafb; }
+    .muted { color: #6b7280; }
+    .login-shell { display: flex; align-items: center; justify-content: center; min-height: 100vh; background: linear-gradient(135deg, #0b61d8, #003f8a); }
+    .login-card { background: #fff; color: #111827; width: min(420px, 92vw); border-radius: 12px; box-shadow: 0 20px 40px rgba(0,0,0,.25); }
+    .login-card input { background: #fff; color: #111827; border: 1px solid #d1d5db; }
+    @media (max-width: 1024px) {
+      .admin-container { grid-template-columns: 1fr; }
+      .admin-sidebar { position: static; height: auto; }
+    }
+  </style>
+</head>
+<body>
+  <div class="admin-container">
+    <aside class="admin-sidebar">
+      <h2>Admin</h2>
+      <ul>
+        <li><a href="#" class="menu-item" data-aba="dashboard">Dashboard</a></li>
+        <li><a href="#" class="menu-item" data-aba="produtos">Produtos</a></li>
+        <li><a href="#" class="menu-item" data-aba="categorias">Categorias</a></li>
+        <li><a href="#" class="menu-item" data-aba="configuracoes">Configurações</a></li>
+        <li><button class="menu-item" onclick="admin.logout(); setTimeout(() => window.location.href='index.html', 800);">Sair</button></li>
+      </ul>
+    </aside>
+
+    <main class="admin-conteudo">
+      <div class="admin-header">
+        <h1>Painel Administrativo</h1>
+        <p id="hora-atual" class="muted"></p>
+      </div>
+
+      <section class="admin-aba-conteudo" data-aba="dashboard">
+        <h2>Dashboard</h2>
+        <div class="grid-stats" id="stats-container"></div>
+      </section>
+
+      <section class="admin-aba-conteudo" data-aba="produtos">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:var(--espaco-grande);">
+          <h2>Gerenciar Produtos</h2>
+          <button class="botao" onclick="abrirModalNovoProduto()">Novo Produto</button>
+        </div>
+        <div class="card-box" style="overflow-x:auto;">
+          <table class="tabela-produtos">
+            <thead><tr><th>Nome</th><th>Categorias</th><th>Preço</th><th>Desconto</th><th>Oferta Home</th><th>Mídia</th><th>Status</th><th>Ações</th></tr></thead>
+            <tbody id="tbody-produtos"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="admin-aba-conteudo" data-aba="categorias">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:var(--espaco-grande);">
+          <h2>Gerenciar Categorias</h2>
+          <button class="botao" onclick="abrirModalNovaCategoria()">Nova Categoria</button>
+        </div>
+        <div class="card-box" style="overflow-x:auto;">
+          <table class="tabela-produtos">
+            <thead><tr><th>Nome</th><th>Cor</th><th>Criada em</th><th>Ações</th></tr></thead>
+            <tbody id="tbody-categorias"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="admin-aba-conteudo" data-aba="configuracoes">
+        <h2>Configurações</h2>
+        <div class="card-box">
+          <p class="muted" style="margin-bottom: var(--espaco-grande);">Área de manutenção de dados.</p>
+          <button class="botao botao-perigo" onclick="limparTodosDados()">Deletar todos os dados</button>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div id="modal-novo-produto" class="modal-backdrop" style="display:none;">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 class="modal-titulo">Novo Produto</h2>
+        <button class="modal-fechar" onclick="fecharModal('modal-novo-produto')">×</button>
+      </div>
+      <form class="modal-corpo formulario" onsubmit="salvarNovoProduto(event)">
+        <input type="hidden" id="prod-id-edicao" value="">
+        <div class="campo"><label for="prod-nome">Nome do produto *</label><input type="text" id="prod-nome" required></div>
+        <div class="campo"><label for="prod-descricao">Descrição</label><textarea id="prod-descricao" rows="4"></textarea></div>
+        <div class="campo"><label for="prod-preco">Preço (R$) *</label><input type="number" id="prod-preco" min="0" step="0.01" required></div>
+        <div class="campo">
+          <label>Categorias</label>
+          <div id="prod-categorias-checkboxes" class="card-box" style="max-height:140px;overflow:auto;padding:10px;"></div>
+        </div>
+        <div class="campo"><label for="prod-imagem">Imagens (múltiplas)</label><input type="file" id="prod-imagem" accept="image/*" multiple></div>
+        <div class="campo"><label for="prod-video">Vídeos (múltiplos)</label><input type="file" id="prod-video" accept="video/*" multiple></div>
+        <div class="campo"><label for="prod-desconto">Desconto (%)</label><input type="number" id="prod-desconto" min="0" max="100" step="0.01"></div>
+        <div class="campo"><label><input type="checkbox" id="prod-fora-estoque"> Fora de estoque</label></div>
+        <div class="campo"><label><input type="checkbox" id="prod-destaque-oferta"> Exibir na tela inicial de ofertas</label></div>
+      </form>
+      <div class="modal-footer">
+        <button class="botao botao-secundario" onclick="fecharModal('modal-novo-produto')">Cancelar</button>
+        <button class="botao" id="btn-salvar-produto" onclick="document.querySelector('#modal-novo-produto form').dispatchEvent(new Event('submit'))">Salvar Produto</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="modal-nova-categoria" class="modal-backdrop" style="display:none;">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 class="modal-titulo" id="cat-modal-title">Nova Categoria</h2>
+        <button class="modal-fechar" onclick="fecharModal('modal-nova-categoria')">×</button>
+      </div>
+      <form class="modal-corpo formulario" onsubmit="salvarNovaCategoria(event)">
+        <input type="hidden" id="cat-id-edicao" value="">
+        <div class="campo"><label for="cat-nome">Nome da categoria *</label><input type="text" id="cat-nome" required></div>
+        <div class="campo"><label for="cat-cor">Cor</label><input type="color" id="cat-cor" value="#007BFF"></div>
+      </form>
+      <div class="modal-footer">
+        <button class="botao botao-secundario" onclick="fecharModal('modal-nova-categoria')">Cancelar</button>
+        <button class="botao" id="btn-salvar-categoria" onclick="document.querySelector('#modal-nova-categoria form').dispatchEvent(new Event('submit'))">Salvar Categoria</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/config.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/admin.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      if (!admin.logado) fazerLogin();
+      else inicializarAdmin();
+    });
+
+    function fazerLogin() {
+      document.body.innerHTML = `
+        <div class="login-shell">
+          <div class="login-card">
+            <div class="modal-corpo" style="padding: var(--espaco-enorme);">
+              <h1 style="text-align:center;margin-bottom:var(--espaco-grande);color:#111827;">Administração</h1>
+              <form id="form-login" class="formulario" onsubmit="realizarLogin(event)">
+                <div class="campo"><label for="senha-admin" style="color:#111827;">Senha</label><input type="password" id="senha-admin" required autofocus></div>
+                <div class="campo"><label for="chave-admin" style="color:#111827;">Chave de Segurança (opcional)</label><input type="password" id="chave-admin"></div>
+                <button type="submit" class="botao botao-grande" style="width:100%;">Entrar</button>
+              </form>
+            </div>
+          </div>
+        </div>`;
+    }
+
+    function realizarLogin(event) {
+      event.preventDefault();
+      const senha = document.getElementById('senha-admin').value;
+      const chave = document.getElementById('chave-admin').value;
+      if (admin.login(senha, chave)) setTimeout(() => window.location.reload(), 500);
+    }
+
+    function inicializarAdmin() {
+      atualizarStats();
+      atualizarTabelaProdutos();
+      atualizarTabelaCategorias();
+      document.querySelectorAll('.menu-item[data-aba]').forEach((item) => {
+        item.addEventListener('click', (e) => {
+          e.preventDefault();
+          abrirAba(item.dataset.aba);
+        });
+      });
+      abrirAba('dashboard');
+      atualizarHora();
+      setInterval(atualizarHora, 60000);
+    }
+
+    function abrirAba(nomeAba) {
+      document.querySelectorAll('.admin-aba-conteudo').forEach((el) => el.classList.remove('ativa'));
+      const conteudo = document.querySelector(`.admin-aba-conteudo[data-aba="${nomeAba}"]`);
+      if (conteudo) conteudo.classList.add('ativa');
+      document.querySelectorAll('.admin-sidebar .menu-item').forEach((el) => el.classList.remove('ativo'));
+      const ativo = document.querySelector(`.admin-sidebar .menu-item[data-aba="${nomeAba}"]`);
+      if (ativo) ativo.classList.add('ativo');
+    }
+
+    function atualizarHora() {
+      document.getElementById('hora-atual').textContent = `Hora atual: ${new Date().toLocaleTimeString('pt-BR')}`;
+    }
+
+    function categoriasTexto(produto, categoriasMap) {
+      const ids = Array.isArray(produto.categorias)
+        ? produto.categorias
+        : (produto.categoria ? [produto.categoria] : []);
+      if (!ids.length) return '-';
+      return ids.map((id) => categoriasMap[String(id)] || String(id)).join(', ');
+    }
+
+    function atualizarStats() {
+      const stats = admin.obterEstatisticas();
+      document.getElementById('stats-container').innerHTML = `
+        <div class="stat-card"><h3>Total de Produtos</h3><div class="numero">${stats.totalProdutos}</div></div>
+        <div class="stat-card"><h3>Produtos Visíveis</h3><div class="numero">${stats.produtosVisiveis}</div></div>
+        <div class="stat-card"><h3>Com Desconto</h3><div class="numero">${stats.produtosComDesconto}</div></div>
+        <div class="stat-card"><h3>Fora de Estoque</h3><div class="numero">${stats.foraEstoque}</div></div>
+      `;
+    }
+
+    function atualizarTabelaProdutos() {
+      const produtos = Storage.getAllProducts();
+      const categorias = Storage.getAllCategories();
+      const categoriasMap = Object.fromEntries(categorias.map((c) => [String(c.id), c.name]));
+      const tbody = document.getElementById('tbody-produtos');
+
+      if (!produtos.length) {
+        tbody.innerHTML = '<tr><td colspan="8" class="muted" style="text-align:center;">Nenhum produto adicionado.</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = '';
+      produtos.forEach((produto) => {
+        const desconto = Number(produto.desconto || 0);
+        const status = produto.foraEstoque ? 'Fora de estoque' : (produto.visivel === false ? 'Oculto' : 'Ativo');
+        const qtdImagens = Array.isArray(produto.imagens) ? produto.imagens.length : (produto.imagem ? 1 : 0);
+        const qtdVideos = Array.isArray(produto.videos) ? produto.videos.length : (produto.video ? 1 : 0);
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><strong>${produto.nome}</strong></td>
+          <td>${categoriasTexto(produto, categoriasMap)}</td>
+          <td>${CONFIG.formatCurrency(produto.preco || 0)}</td>
+          <td>${desconto}%</td>
+          <td>${produto.destaqueOferta ? 'Sim' : 'Não'}</td>
+          <td>${qtdImagens} imagem(ns), ${qtdVideos} vídeo(s)</td>
+          <td>${status}</td>
+          <td>
+            <button class="botao botao-pequeno botao-secundario" onclick="editarProduto(${produto.id})">Editar</button>
+            <button class="botao botao-pequeno botao-perigo" onclick="deletarProdutoAdmin(${produto.id})">Excluir</button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function atualizarTabelaCategorias() {
+      const categorias = Storage.getAllCategories();
+      const tbody = document.getElementById('tbody-categorias');
+      if (!categorias.length) {
+        tbody.innerHTML = '<tr><td colspan="4" class="muted" style="text-align:center;">Nenhuma categoria adicionada.</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = '';
+      categorias.forEach((categoria) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><strong>${categoria.name}</strong></td>
+          <td><span style="display:inline-block;width:20px;height:20px;border-radius:4px;background:${categoria.color};margin-right:6px;"></span>${categoria.color}</td>
+          <td>${formatarData(categoria.dataCriacao)}</td>
+          <td>
+            <button class="botao botao-pequeno botao-secundario" onclick="editarCategoriaAdmin(${categoria.id})">Editar</button>
+            <button class="botao botao-pequeno botao-perigo" onclick="deletarCategoriaAdmin(${categoria.id})">Deletar</button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function preencherCategoriasSelect(selecionadas = []) {
+      const host = document.getElementById('prod-categorias-checkboxes');
+      const categorias = Storage.getAllCategories();
+      host.innerHTML = '';
+
+      categorias.forEach((categoria) => {
+        const id = String(categoria.id);
+        const label = document.createElement('label');
+        label.style.display = 'flex';
+        label.style.gap = '8px';
+        label.style.alignItems = 'center';
+        label.style.marginBottom = '6px';
+        label.innerHTML = `<input type="checkbox" value="${id}" ${selecionadas.includes(id) ? 'checked' : ''}> ${categoria.name}`;
+        host.appendChild(label);
+      });
+    }
+
+    function categoriasSelecionadas() {
+      return Array.from(document.querySelectorAll('#prod-categorias-checkboxes input[type="checkbox"]:checked')).map((i) => i.value);
+    }
+
+    function arquivosParaDataURL(arquivos) {
+      const lista = Array.from(arquivos || []);
+      return Promise.all(lista.map((arquivo) => new Promise((resolve, reject) => {
+        const leitor = new FileReader();
+        leitor.onload = () => resolve(leitor.result);
+        leitor.onerror = reject;
+        leitor.readAsDataURL(arquivo);
+      })));
+    }
+
+    function abrirModalNovoProduto() {
+      document.getElementById('prod-id-edicao').value = '';
+      document.querySelector('#modal-novo-produto .modal-titulo').textContent = 'Novo Produto';
+      document.getElementById('btn-salvar-produto').textContent = 'Salvar Produto';
+      document.getElementById('prod-nome').value = '';
+      document.getElementById('prod-descricao').value = '';
+      document.getElementById('prod-preco').value = '';
+      document.getElementById('prod-imagem').value = '';
+      document.getElementById('prod-video').value = '';
+      document.getElementById('prod-desconto').value = '0';
+      document.getElementById('prod-fora-estoque').checked = false;
+      document.getElementById('prod-destaque-oferta').checked = false;
+      preencherCategoriasSelect([]);
+      abrirModal('modal-novo-produto');
+    }
+
+    async function salvarNovoProduto(event) {
+      event.preventDefault();
+
+      const desconto = Number(document.getElementById('prod-desconto').value || 0);
+      if (!Number.isFinite(desconto) || desconto < 0 || desconto > 100) {
+        mostrarMensagem('Desconto deve estar entre 0% e 100%.', 'erro');
+        return;
+      }
+
+      const idEdicao = document.getElementById('prod-id-edicao').value;
+      const selecionadas = categoriasSelecionadas();
+      const imagensNovas = await arquivosParaDataURL(document.getElementById('prod-imagem').files);
+      const videosNovos = await arquivosParaDataURL(document.getElementById('prod-video').files);
+
+      const atual = idEdicao ? Storage.getProduct(Number(idEdicao)) : null;
+      const imagensAtuais = Array.isArray(atual?.imagens) ? atual.imagens : (atual?.imagem ? [atual.imagem] : []);
+      const videosAtuais = Array.isArray(atual?.videos) ? atual.videos : (atual?.video ? [atual.video] : []);
+
+      const payload = {
+        nome: document.getElementById('prod-nome').value,
+        descricao: document.getElementById('prod-descricao').value,
+        preco: parseFloat(document.getElementById('prod-preco').value),
+        categorias: selecionadas,
+        desconto,
+        foraEstoque: document.getElementById('prod-fora-estoque').checked,
+        destaqueOferta: document.getElementById('prod-destaque-oferta').checked,
+        imagens: imagensNovas.length ? imagensNovas : imagensAtuais,
+        videos: videosNovos.length ? videosNovos : videosAtuais,
+      };
+
+      const ok = idEdicao
+        ? admin.editarProduto(Number(idEdicao), payload)
+        : admin.criarProduto(payload);
+
+      if (ok) {
+        fecharModal('modal-novo-produto');
+        atualizarTabelaProdutos();
+        atualizarStats();
+      }
+    }
+
+    function editarProduto(idProduto) {
+      const produto = Storage.getProduct(idProduto);
+      if (!produto) return mostrarMensagem('Produto não encontrado.', 'erro');
+
+      document.getElementById('prod-id-edicao').value = String(produto.id);
+      document.querySelector('#modal-novo-produto .modal-titulo').textContent = 'Editar Produto';
+      document.getElementById('btn-salvar-produto').textContent = 'Salvar Alterações';
+      document.getElementById('prod-nome').value = produto.nome || '';
+      document.getElementById('prod-descricao').value = produto.descricao || '';
+      document.getElementById('prod-preco').value = produto.preco || '';
+      document.getElementById('prod-desconto').value = Number(produto.desconto || 0);
+      document.getElementById('prod-fora-estoque').checked = Boolean(produto.foraEstoque);
+      document.getElementById('prod-destaque-oferta').checked = Boolean(produto.destaqueOferta);
+      document.getElementById('prod-imagem').value = '';
+      document.getElementById('prod-video').value = '';
+
+      const selecionadas = Array.isArray(produto.categorias)
+        ? produto.categorias.map(String)
+        : (produto.categoria ? [String(produto.categoria)] : []);
+      preencherCategoriasSelect(selecionadas);
+      abrirModal('modal-novo-produto');
+    }
+
+    function deletarProdutoAdmin(id) {
+      admin.deletarProduto(id);
+      setTimeout(() => {
+        atualizarTabelaProdutos();
+        atualizarStats();
+      }, 250);
+    }
+
+    function abrirModalNovaCategoria() {
+      document.getElementById('cat-id-edicao').value = '';
+      document.getElementById('cat-modal-title').textContent = 'Nova Categoria';
+      document.getElementById('btn-salvar-categoria').textContent = 'Salvar Categoria';
+      document.getElementById('cat-nome').value = '';
+      document.getElementById('cat-cor').value = '#007BFF';
+      abrirModal('modal-nova-categoria');
+    }
+
+    function editarCategoriaAdmin(idCategoria) {
+      const categoria = Storage.getAllCategories().find((c) => c.id === idCategoria);
+      if (!categoria) return mostrarMensagem('Categoria não encontrada.', 'erro');
+      document.getElementById('cat-id-edicao').value = String(categoria.id);
+      document.getElementById('cat-modal-title').textContent = 'Editar Categoria';
+      document.getElementById('btn-salvar-categoria').textContent = 'Salvar Alterações';
+      document.getElementById('cat-nome').value = categoria.name || '';
+      document.getElementById('cat-cor').value = categoria.color || '#007BFF';
+      abrirModal('modal-nova-categoria');
+    }
+
+    function salvarNovaCategoria(event) {
+      event.preventDefault();
+      const idEdicao = document.getElementById('cat-id-edicao').value;
+      const nome = document.getElementById('cat-nome').value.trim();
+      const cor = document.getElementById('cat-cor').value;
+
+      const ok = idEdicao
+        ? admin.editarCategoria(Number(idEdicao), nome, cor)
+        : admin.criarCategoria(nome, cor);
+
+      if (ok) {
+        fecharModal('modal-nova-categoria');
+        atualizarTabelaCategorias();
+        atualizarTabelaProdutos();
+      }
+    }
+
+    function deletarCategoriaAdmin(id) {
+      admin.deletarCategoria(id);
+      setTimeout(() => {
+        atualizarTabelaCategorias();
+        atualizarTabelaProdutos();
+        atualizarStats();
+      }, 250);
+    }
+
+    function limparTodosDados() {
+      confirmarDelecao('Isto vai deletar todos os produtos e categorias.', () => {
+        Storage.clearAll();
+        setTimeout(() => window.location.reload(), 1000);
+      });
+    }
+  </script>
+</body>
+</html>
