@@ -1,0 +1,26 @@
+﻿# Ignorar artefatos locais e dados sensíveis
+
+# Sistema / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.log
+
+# Dependências e build
+node_modules/
+dist/
+build/
+
+# Secrets locais
+.env
+.env.*
+!.env.example
+
+# Credenciais locais do admin (se optar por arquivo externo futuramente)
+admin-credentials.json
+secrets/
+
+# Backups temporários
+*.bak
+*.tmp

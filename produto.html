@@ -1,0 +1,768 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kit Plataforma de Milho — Case | HS Sistemas Agrícolas</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    /* =========================================
+       PÁGINA DE PRODUTO — ESTILOS ESPECÍFICOS
+       ========================================= */
+
+    .produto-hero {
+      background: var(--cor-branco);
+      padding-bottom: 5rem;
+    }
+
+    /* Breadcrumb */
+    .breadcrumb-bar {
+      background: var(--cor-clara);
+      border-bottom: 1px solid var(--cor-borda);
+      padding: 0.85rem 2rem;
+    }
+
+    .breadcrumb-bar__inner {
+      max-width: 1320px;
+      margin: 0 auto;
+    }
+
+    .breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.82rem;
+      color: var(--cor-texto-suave);
+    }
+
+    .breadcrumb a { color: var(--cor-texto-suave); transition: var(--transicao); }
+    .breadcrumb a:hover { color: var(--cor-primaria); }
+    .breadcrumb span { color: var(--cor-borda); }
+    .breadcrumb .atual { color: var(--cor-texto); font-weight: 600; }
+
+    /* Layout principal do produto */
+    .produto-layout {
+      max-width: 1320px;
+      margin: 0 auto;
+      padding: 3rem 2rem 0;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5rem;
+      align-items: start;
+    }
+
+    /* ======= GALERIA DE MÍDIA ======= */
+    .galeria {
+      position: sticky;
+      top: 90px;
+    }
+
+    .galeria__principal {
+      width: 100%;
+      aspect-ratio: 1;
+      background: var(--cor-clara);
+      border-radius: var(--raio-lg);
+      overflow: hidden;
+      position: relative;
+      border: 2px solid var(--cor-borda);
+      box-shadow: var(--sombra);
+    }
+
+    .galeria__img-principal {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: opacity 0.3s;
+    }
+
+    .galeria__badges {
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    /* Controles do slider */
+    .galeria__ctrl {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 38px;
+      height: 38px;
+      background: rgba(255,255,255,0.92);
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 1.1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.18);
+      transition: var(--transicao);
+      z-index: 2;
+    }
+
+    .galeria__ctrl:hover {
+      background: var(--cor-destaque);
+      transform: translateY(-50%) scale(1.1);
+    }
+
+    .galeria__ctrl--prev { left: 10px; }
+    .galeria__ctrl--prox { right: 10px; }
+
+    /* Indicador de tipo */
+    .galeria__tipo {
+      position: absolute;
+      bottom: 14px;
+      right: 14px;
+      background: rgba(0,0,0,0.55);
+      color: white;
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 50px;
+      backdrop-filter: blur(4px);
+    }
+
+    /* Thumbnails */
+    .galeria__thumbs {
+      display: flex;
+      gap: 0.6rem;
+      margin-top: 1rem;
+      overflow-x: auto;
+      padding-bottom: 4px;
+      scrollbar-width: thin;
+      scrollbar-color: var(--cor-borda) transparent;
+    }
+
+    .galeria__thumb {
+      flex-shrink: 0;
+      width: 74px;
+      height: 74px;
+      border-radius: var(--raio);
+      overflow: hidden;
+      cursor: pointer;
+      border: 2.5px solid var(--cor-borda);
+      transition: var(--transicao);
+      background: var(--cor-clara);
+      position: relative;
+    }
+
+    .galeria__thumb:hover,
+    .galeria__thumb.ativo {
+      border-color: var(--cor-primaria);
+      transform: scale(1.04);
+    }
+
+    .galeria__thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* Thumb de vídeo */
+    .galeria__thumb--video::after {
+      content: '▶';
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0,0,0,0.42);
+      color: white;
+      font-size: 1.2rem;
+    }
+
+    .galeria__thumb--video::after {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* ======= INFO DO PRODUTO ======= */
+    .produto-info {
+      padding-top: 0.5rem;
+    }
+
+    .produto-info__codigo-cat {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 0.8rem;
+    }
+
+    .produto-info__codigo {
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--cor-texto-suave);
+      background: var(--cor-clara);
+      padding: 3px 10px;
+      border-radius: 50px;
+      border: 1px solid var(--cor-borda);
+    }
+
+    .produto-info__cat {
+      font-size: 0.8rem;
+      color: var(--cor-primaria);
+      font-weight: 600;
+    }
+
+    .produto-info h1 {
+      font-family: var(--fonte-titulo);
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--cor-primaria);
+      line-height: 1.2;
+      margin-bottom: 1rem;
+    }
+
+    /* Preços */
+    .produto-precos {
+      display: flex;
+      align-items: baseline;
+      gap: 1rem;
+      flex-wrap: wrap;
+      padding: 1.4rem 1.6rem;
+      background: var(--cor-clara);
+      border-radius: var(--raio);
+      margin-bottom: 1.5rem;
+      border: 1.5px solid var(--cor-borda);
+    }
+
+    .produto-preco-original {
+      font-size: 1rem;
+      color: var(--cor-texto-suave);
+      text-decoration: line-through;
+    }
+
+    .produto-preco-atual {
+      font-family: var(--fonte-titulo);
+      font-size: 2.2rem;
+      font-weight: 900;
+      color: var(--cor-primaria);
+      line-height: 1;
+    }
+
+    .produto-preco-atual.desconto {
+      color: var(--cor-desconto);
+    }
+
+    .produto-desconto-pct {
+      background: var(--cor-desconto);
+      color: white;
+      font-size: 0.85rem;
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: 50px;
+    }
+
+    .produto-preco-parcelas {
+      font-size: 0.85rem;
+      color: var(--cor-texto-suave);
+      width: 100%;
+    }
+
+    /* Botão de compra */
+    .produto-comprar {
+      margin-bottom: 1.5rem;
+    }
+
+    .btn-comprar-whatsapp {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      width: 100%;
+      padding: 1.1rem 2rem;
+      background: #25D366;
+      color: white;
+      border: none;
+      border-radius: 50px;
+      font-family: var(--fonte-corpo);
+      font-size: 1.05rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: var(--transicao);
+      letter-spacing: 0.02em;
+      text-decoration: none;
+    }
+
+    .btn-comprar-whatsapp:hover {
+      background: #1dba58;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 28px rgba(37,211,102,0.4);
+    }
+
+    .btn-comprar-whatsapp svg {
+      width: 24px;
+      height: 24px;
+      fill: white;
+      flex-shrink: 0;
+    }
+
+    .btn-consultar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      width: 100%;
+      padding: 0.9rem 2rem;
+      background: transparent;
+      border: 2px solid var(--cor-primaria);
+      color: var(--cor-primaria);
+      border-radius: 50px;
+      font-family: var(--fonte-corpo);
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: var(--transicao);
+      margin-top: 0.6rem;
+      text-decoration: none;
+    }
+
+    .btn-consultar:hover {
+      background: var(--cor-primaria);
+      color: var(--cor-branco);
+    }
+
+    /* Garantias rápidas */
+    .produto-garantias {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .garantia-mini {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.82rem;
+      color: var(--cor-texto-suave);
+      padding: 0.6rem 0.8rem;
+      background: var(--cor-clara);
+      border-radius: var(--raio);
+      border: 1px solid var(--cor-borda);
+    }
+
+    .garantia-mini__icone { font-size: 1.1rem; }
+
+    /* Divider */
+    .produto-divider {
+      height: 1px;
+      background: var(--cor-borda);
+      margin: 1.5rem 0;
+    }
+
+    /* Descrição */
+    .produto-descricao h3 {
+      font-family: var(--fonte-titulo);
+      font-size: 1.15rem;
+      color: var(--cor-primaria);
+      margin-bottom: 0.75rem;
+      font-weight: 700;
+    }
+
+    .produto-descricao p {
+      color: var(--cor-texto-suave);
+      line-height: 1.8;
+      margin-bottom: 1rem;
+    }
+
+    /* Lista de componentes */
+    .componentes-lista {
+      background: var(--cor-clara);
+      border-radius: var(--raio);
+      padding: 1.2rem 1.4rem;
+      margin-top: 1rem;
+      border: 1px solid var(--cor-borda);
+    }
+
+    .componentes-lista h4 {
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--cor-destaque);
+      margin-bottom: 0.75rem;
+    }
+
+    .componentes-lista ul {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.4rem;
+    }
+
+    .componentes-lista li {
+      font-size: 0.88rem;
+      color: var(--cor-texto);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .componentes-lista li::before {
+      content: '✓';
+      color: var(--cor-destaque);
+      font-weight: 700;
+      font-size: 0.8rem;
+      flex-shrink: 0;
+    }
+
+    /* Compatibilidade */
+    .compat-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 0.75rem;
+    }
+
+    .compat-tag {
+      display: inline-block;
+      padding: 5px 12px;
+      background: var(--cor-branco);
+      border: 1.5px solid var(--cor-primaria);
+      border-radius: 50px;
+      font-size: 0.8rem;
+      color: var(--cor-primaria);
+      font-weight: 600;
+    }
+
+    /* ======= SEÇÃO: PRODUTOS RELACIONADOS ======= */
+    .relacionados {
+      background: var(--cor-clara);
+      padding: 5rem 0;
+      margin-top: 5rem;
+    }
+
+    .relacionados .container {
+      max-width: 1320px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    /* ======= RESPONSIVO ======= */
+    @media (max-width: 1024px) {
+      .produto-layout { grid-template-columns: 1fr; gap: 2.5rem; }
+      .galeria { position: static; }
+    }
+
+    @media (max-width: 600px) {
+      .produto-info h1 { font-size: 1.6rem; }
+      .produto-garantias { grid-template-columns: 1fr; }
+      .componentes-lista ul { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="header">
+    <div class="header__inner">
+      <a href="index.html" class="header__logo">
+        <div class="header__logo-icon">HS</div>
+        <div class="header__logo-text">
+          <span class="header__logo-name">HS</span>
+          <span class="header__logo-sub">Sistemas Agrícolas</span>
+        </div>
+      </a>
+      <nav class="header__nav">
+        <a href="index.html" class="nav__link">Início</a>
+        <a href="catalogo.html" class="nav__link ativo">Catálogo</a>
+        <a href="index.html#sobre" class="nav__link">Sobre</a>
+        <a href="index.html#garantia" class="nav__link">Suporte</a>
+      </nav>
+      <a href="https://wa.me/5545999999999?text=Olá!%20Gostaria%20de%20informações%20sobre%20o%20Kit%205161." class="header__whatsapp" target="_blank">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.890-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+        </svg>
+        <span>WhatsApp</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- BREADCRUMB -->
+  <div class="breadcrumb-bar">
+    <div class="breadcrumb-bar__inner">
+      <div class="breadcrumb">
+        <a href="index.html">Início</a>
+        <span>›</span>
+        <a href="catalogo.html">Catálogo</a>
+        <span>›</span>
+        <a href="catalogo.html?cat=case">Kits Case</a>
+        <span>›</span>
+        <span class="atual">Kit Plataforma de Milho — Cód. 5161</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- PRODUTO PRINCIPAL -->
+  <section class="produto-hero">
+    <div class="produto-layout">
+
+      <!-- GALERIA DE MÍDIA -->
+      <div class="galeria">
+        <div class="galeria__principal" id="galeriaPrincipal">
+          <div class="galeria__badges">
+            <span class="badge badge--destaque">⭐ Destaque</span>
+          </div>
+
+          <!-- Imagem principal (controlada por JS) -->
+          <img
+            src="https://images.unsplash.com/photo-1621600411688-4be93cd68504?w=900"
+            alt="Kit Plataforma de Milho Case"
+            class="galeria__img-principal"
+            id="imgPrincipal"
+            onerror="this.style.background='#e8e0d0'; this.removeAttribute('src')"
+          />
+
+          <!-- Container de vídeo (oculto por padrão) -->
+          <div id="videoPrincipal" style="display:none; width:100%; height:100%; position:absolute; inset:0;">
+            <iframe
+              id="iframeVideo"
+              width="100%"
+              height="100%"
+              frameborder="0"
+              allowfullscreen
+              style="border-radius:calc(var(--raio-lg) - 2px);"
+            ></iframe>
+          </div>
+
+          <button class="galeria__ctrl galeria__ctrl--prev" onclick="mudarMidia(-1)">‹</button>
+          <button class="galeria__ctrl galeria__ctrl--prox" onclick="mudarMidia(1)">›</button>
+
+          <span class="galeria__tipo" id="galeriaTipo">📷 Foto 1/4</span>
+        </div>
+
+        <!-- Thumbnails -->
+        <div class="galeria__thumbs" id="galeriaThumbs">
+          <!-- Imagens -->
+          <div class="galeria__thumb ativo" onclick="selecionarMidia(0)" data-type="img" data-src="https://images.unsplash.com/photo-1621600411688-4be93cd68504?w=900">
+            <img src="https://images.unsplash.com/photo-1621600411688-4be93cd68504?w=200" alt="Foto 1" />
+          </div>
+          <div class="galeria__thumb" onclick="selecionarMidia(1)" data-type="img" data-src="https://images.unsplash.com/photo-1592982537447-7440770cbfc9?w=900">
+            <img src="https://images.unsplash.com/photo-1592982537447-7440770cbfc9?w=200" alt="Foto 2" />
+          </div>
+          <div class="galeria__thumb" onclick="selecionarMidia(2)" data-type="img" data-src="https://images.unsplash.com/photo-1598965402089-897ce52e8355?w=900">
+            <img src="https://images.unsplash.com/photo-1598965402089-897ce52e8355?w=200" alt="Foto 3" />
+          </div>
+          <div class="galeria__thumb" onclick="selecionarMidia(3)" data-type="img" data-src="https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=900">
+            <img src="https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=200" alt="Foto 4" />
+          </div>
+          <!-- Thumb de vídeo (exemplo) -->
+          <div class="galeria__thumb galeria__thumb--video" onclick="selecionarMidia(4)" data-type="video" data-src="https://www.youtube.com/embed/dQw4w9WgXcQ">
+            <img src="https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=200" alt="Vídeo demonstrativo" style="filter:brightness(0.6)"/>
+          </div>
+        </div>
+      </div><!-- /galeria -->
+
+      <!-- INFORMAÇÕES DO PRODUTO -->
+      <div class="produto-info">
+        <div class="produto-info__codigo-cat">
+          <span class="produto-info__codigo">Cód: 5161</span>
+          <span class="produto-info__cat">Kits Case › Milho</span>
+        </div>
+
+        <h1>Kit Plataforma de Milho — Case</h1>
+
+        <!-- Preço -->
+        <div class="produto-precos">
+          <div style="width:100%; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;">
+            <span class="produto-preco-original">R$ 2.000,00</span>
+            <span class="produto-preco-atual desconto">R$ 1.700,00</span>
+            <span class="produto-desconto-pct">−15%</span>
+          </div>
+          <span class="produto-preco-parcelas">💳 ou em até 12× sem juros — consulte condições</span>
+        </div>
+
+        <!-- Botão de compra WhatsApp -->
+        <div class="produto-comprar">
+          <a
+            href="https://wa.me/5545999999999?text=Olá!%20Tenho%20interesse%20no%20Kit%20Plataforma%20de%20Milho%20Case%20(Cód.%205161).%20Pode%20me%20ajudar?"
+            class="btn-comprar-whatsapp"
+            target="_blank"
+          >
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.890-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+            </svg>
+            Comprar pelo WhatsApp
+          </a>
+          <a
+            href="https://wa.me/5545999999999?text=Olá!%20Gostaria%20de%20tirar%20uma%20dúvida%20sobre%20o%20Kit%205161."
+            class="btn-consultar"
+            target="_blank"
+          >
+            💬 Tirar uma dúvida
+          </a>
+        </div>
+
+        <!-- Garantias rápidas -->
+        <div class="produto-garantias">
+          <div class="garantia-mini">
+            <span class="garantia-mini__icone">🛡️</span>
+            <span>Garantia de 3 meses</span>
+          </div>
+          <div class="garantia-mini">
+            <span class="garantia-mini__icone">🚚</span>
+            <span>Envio para todo o Brasil</span>
+          </div>
+          <div class="garantia-mini">
+            <span class="garantia-mini__icone">🛠️</span>
+            <span>Suporte técnico incluso</span>
+          </div>
+          <div class="garantia-mini">
+            <span class="garantia-mini__icone">📚</span>
+            <span>Manual de instalação</span>
+          </div>
+        </div>
+
+        <div class="produto-divider"></div>
+
+        <!-- Descrição -->
+        <div class="produto-descricao">
+          <h3>Descrição do Produto</h3>
+          <p>
+            O <strong>Kit Plataforma de Milho para colheitadeiras Case</strong> foi desenvolvido para
+            garantir o controle preciso da altura da plataforma durante a colheita, reduzindo
+            perdas e aumentando a eficiência operacional no campo.
+          </p>
+          <p>
+            Equipamento composto por três sensores com haste, suportes de fixação, parafuso,
+            chicote e conector, projetados especialmente para as colheitadeiras Case.
+          </p>
+
+          <!-- Lista de componentes -->
+          <div class="componentes-lista">
+            <h4>📦 Componentes do Kit</h4>
+            <ul>
+              <li>3 Sensores com haste</li>
+              <li>Suportes de fixação</li>
+              <li>Parafuso de fixação</li>
+              <li>Chicote elétrico</li>
+              <li>Conector padrão</li>
+              <li>Manual de instalação</li>
+            </ul>
+          </div>`r`n</div>
+
+      </div><!-- /produto-info -->
+    </div><!-- /produto-layout -->
+  </section>
+
+
+  <!-- PRODUTOS RELACIONADOS -->
+  <section class="relacionados">
+    <div class="container">
+      <div class="secao-titulo">
+        <span class="secao-titulo__sub">Você também pode gostar</span>
+        <h2>Produtos Relacionados</h2>
+      </div>
+
+      <div class="produtos-grid" style="max-width:1320px; margin:0 auto">
+        <a href="produto.html" class="produto-card">
+          <div class="produto-card__badge">
+            <span class="badge badge--desconto">−10%</span>
+          </div>
+          <div class="produto-card__img-wrap">
+            <img src="https://images.unsplash.com/photo-1592982537447-7440770cbfc9?w=500" alt="" class="produto-card__imagem" onerror="this.style.background='#e8e0d0';this.removeAttribute('src')"/>
+          </div>
+          <div class="produto-card__corpo">
+            <span class="produto-card__codigo">Cód: 5162</span>
+            <h3 class="produto-card__nome">Kit Milho 4 sensores — Case</h3>
+            <span class="produto-card__categoria">Kits Case</span>
+            <div class="produto-card__precos">
+              <span class="preco-original">R$ 1.800,00</span>
+              <span class="preco-atual com-desconto">R$ 1.620,00</span>
+            </div>
+          </div>
+        </a>
+
+        <a href="produto.html" class="produto-card">
+          <div class="produto-card__img-wrap">
+            <img src="https://images.unsplash.com/photo-1598965402089-897ce52e8355?w=500" alt="" class="produto-card__imagem" onerror="this.style.background='#e8e0d0';this.removeAttribute('src')"/>
+          </div>
+          <div class="produto-card__corpo">
+            <span class="produto-card__codigo">Cód: 5163</span>
+            <h3 class="produto-card__nome">Kit Milho c/ Controlador — Case</h3>
+            <span class="produto-card__categoria">Kits Case</span>
+            <div class="produto-card__precos">
+              <span class="preco-atual">Consulte o preço</span>
+            </div>
+          </div>
+        </a>
+
+        <a href="produto.html" class="produto-card">
+          <div class="produto-card__img-wrap">
+            <img src="https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=500" alt="" class="produto-card__imagem" onerror="this.style.background='#e8e0d0';this.removeAttribute('src')"/>
+          </div>
+          <div class="produto-card__corpo">
+            <span class="produto-card__codigo">Cód: 5164</span>
+            <h3 class="produto-card__nome">Kit Plataforma de Soja — Case</h3>
+            <span class="produto-card__categoria">Kits Case</span>
+            <div class="produto-card__precos">
+              <span class="preco-atual">Consulte o preço</span>
+            </div>
+          </div>
+        </a>
+
+        <a href="produto.html" class="produto-card">
+          <div class="produto-card__badge">
+            <span class="badge badge--destaque">⭐ Destaque</span>
+          </div>
+          <div class="produto-card__img-wrap">
+            <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?w=500" alt="" class="produto-card__imagem" onerror="this.style.background='#e8e0d0';this.removeAttribute('src')"/>
+          </div>
+          <div class="produto-card__corpo">
+            <span class="produto-card__codigo">Cód: 5190</span>
+            <h3 class="produto-card__nome">Controlador Eletrônico de Plataforma</h3>
+            <span class="produto-card__categoria">Peças</span>
+            <div class="produto-card__precos">
+              <span class="preco-atual">Consulte o preço</span>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer__inner">
+      <div class="footer__brand">
+        <h3>HS Sistemas Agrícolas</h3>
+        <p>Soluções em tecnologia para o campo. Kits para Case, John Deere, New Holland, Massey Ferguson e muito mais.</p>
+        <br>
+        <a href="https://wa.me/5545999999999" class="btn btn--whatsapp" target="_blank" style="font-size:0.82rem; padding:0.6rem 1.4rem; width:fit-content">
+          📲 Fale pelo WhatsApp
+        </a>
+      </div>
+      <div class="footer__col">
+        <h4>Navegação</h4>
+        <ul>
+          <li><a href="index.html">Página Inicial</a></li>
+          <li><a href="catalogo.html">Catálogo de Produtos</a></li>
+          <li><a href="index.html#sobre">Sobre a Empresa</a></li>
+          <li><a href="index.html#garantia">Suporte & Garantia</a></li>
+        </ul>
+      </div>
+      </div>
+    <div class="footer__bottom">
+      <span>© 2026 HS Sistemas Agrícolas. Todos os direitos reservados.</span>
+      <span class="footer__versicle">Pv. 16:3</span>
+      <a href="admin/login.html" class="footer__admin-link" title="">©</a>
+    </div>
+  </footer>
+
+  <!-- JavaScript da galeria -->
+    <script src="site-dinamico.js"></script></body>
+</html>
+
+
+
+
+
+

@@ -1,0 +1,951 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Catálogo de Produtos — HS Sistemas Agrícolas</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    /* =========================================
+       CATÁLOGO — ESTILOS ESPECÍFICOS
+       ========================================= */
+
+    .catalogo-hero {
+      background: var(--cor-primaria);
+      padding: 3.5rem 2rem 3rem;
+    }
+
+    .catalogo-hero__inner {
+      max-width: 1320px;
+      margin: 0 auto;
+    }
+
+    .breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.82rem;
+      color: rgba(255,255,255,0.55);
+      margin-bottom: 1.2rem;
+    }
+
+    .breadcrumb a {
+      color: rgba(255,255,255,0.55);
+      transition: var(--transicao);
+    }
+
+    .breadcrumb a:hover { color: var(--cor-destaque); }
+    .breadcrumb span { color: rgba(255,255,255,0.3); }
+
+    .catalogo-hero h1 {
+      font-family: var(--fonte-titulo);
+      font-size: 2.4rem;
+      font-weight: 800;
+      color: var(--cor-branco);
+      margin-bottom: 0.5rem;
+    }
+
+    .catalogo-hero p {
+      color: rgba(255,255,255,0.65);
+      font-size: 1rem;
+    }
+
+    /* --- BARRA DE BUSCA --- */
+    .busca-bar {
+      background: var(--cor-branco);
+      border-bottom: 1px solid var(--cor-borda);
+      padding: 1.2rem 2rem;
+      position: sticky;
+      top: 70px;
+      z-index: 800;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    }
+
+    .busca-bar__inner {
+      max-width: 1320px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .busca-input-wrap {
+      flex: 1;
+      position: relative;
+      max-width: 580px;
+    }
+
+    .busca-input-wrap svg {
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 18px;
+      height: 18px;
+      fill: var(--cor-texto-suave);
+      pointer-events: none;
+    }
+
+    .busca-input {
+      width: 100%;
+      padding: 0.75rem 1rem 0.75rem 2.8rem;
+      border: 2px solid var(--cor-borda);
+      border-radius: 50px;
+      font-family: var(--fonte-corpo);
+      font-size: 0.95rem;
+      color: var(--cor-texto);
+      background: var(--cor-clara);
+      transition: var(--transicao);
+      outline: none;
+    }
+
+    .busca-input:focus {
+      border-color: var(--cor-primaria);
+      background: var(--cor-branco);
+      box-shadow: 0 0 0 3px rgba(27,58,107,0.1);
+    }
+
+    .busca-input::placeholder { color: var(--cor-texto-suave); }
+
+    .busca-resultados {
+      font-size: 0.88rem;
+      color: var(--cor-texto-suave);
+      white-space: nowrap;
+    }
+
+    .busca-ordenacao {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-left: auto;
+    }
+
+    .busca-ordenacao label {
+      font-size: 0.85rem;
+      color: var(--cor-texto-suave);
+      white-space: nowrap;
+    }
+
+    .select-estilo {
+      padding: 0.55rem 1rem;
+      border: 2px solid var(--cor-borda);
+      border-radius: var(--raio);
+      font-family: var(--fonte-corpo);
+      font-size: 0.88rem;
+      color: var(--cor-texto);
+      background: var(--cor-branco);
+      cursor: pointer;
+      outline: none;
+      transition: var(--transicao);
+    }
+
+    .select-estilo:focus { border-color: var(--cor-primaria); }
+
+    /* --- LAYOUT PRINCIPAL: SIDEBAR + GRID --- */
+    .catalogo-main {
+      max-width: 1320px;
+      margin: 0 auto;
+      padding: 2.5rem 2rem;
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 2.5rem;
+      align-items: start;
+    }
+
+    /* --- SIDEBAR DE FILTROS --- */
+    .sidebar {
+      position: sticky;
+      top: 140px;
+      background: var(--cor-branco);
+      border-radius: var(--raio-lg);
+      box-shadow: var(--sombra);
+      border: 1.5px solid var(--cor-borda);
+      overflow: hidden;
+    }
+
+    .sidebar__header {
+      background: var(--cor-primaria);
+      padding: 1.1rem 1.4rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .sidebar__header h3 {
+      font-family: var(--fonte-titulo);
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--cor-branco);
+    }
+
+    .sidebar__limpar {
+      font-size: 0.78rem;
+      color: rgba(255,255,255,0.6);
+      background: none;
+      border: none;
+      cursor: pointer;
+      transition: var(--transicao);
+      font-family: var(--fonte-corpo);
+    }
+
+    .sidebar__limpar:hover { color: var(--cor-destaque); }
+
+    .filtro-grupo {
+      padding: 1.4rem;
+      border-bottom: 1px solid var(--cor-borda);
+    }
+
+    .filtro-grupo:last-child { border-bottom: none; }
+
+    .filtro-grupo__titulo {
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--cor-texto-suave);
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .filtro-grupo__titulo::after {
+      content: '▾';
+      font-size: 0.8rem;
+      transition: transform 0.2s;
+    }
+
+    .filtro-grupo__titulo.aberto::after {
+      transform: rotate(180deg);
+    }
+
+    /* Categorias */
+    .filtro-cats {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .filtro-cat-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.55rem 0.7rem;
+      border-radius: var(--raio);
+      cursor: pointer;
+      transition: var(--transicao);
+      border: 1.5px solid transparent;
+    }
+
+    .filtro-cat-item:hover {
+      background: var(--cor-clara);
+    }
+
+    .filtro-cat-item.ativo {
+      background: rgba(27,58,107,0.08);
+      border-color: var(--cor-primaria);
+    }
+
+    .filtro-cat-item input[type="checkbox"] {
+      display: none;
+    }
+
+    .filtro-cat-label {
+      display: flex;
+      align-items: center;
+      gap: 0.55rem;
+      font-size: 0.9rem;
+      color: var(--cor-texto);
+      cursor: pointer;
+      flex: 1;
+    }
+
+    .filtro-cat-check {
+      width: 17px;
+      height: 17px;
+      border: 2px solid var(--cor-borda);
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: var(--transicao);
+    }
+
+    .filtro-cat-item.ativo .filtro-cat-check {
+      background: var(--cor-primaria);
+      border-color: var(--cor-primaria);
+    }
+
+    .filtro-cat-item.ativo .filtro-cat-check::after {
+      content: '✓';
+      color: white;
+      font-size: 0.7rem;
+      font-weight: 700;
+    }
+
+    .filtro-cat-count {
+      font-size: 0.75rem;
+      background: var(--cor-clara);
+      color: var(--cor-texto-suave);
+      padding: 2px 7px;
+      border-radius: 50px;
+      font-weight: 600;
+    }
+
+    /* Slider de preço */
+    .filtro-preco {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .filtro-preco__range {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.85rem;
+      color: var(--cor-texto-suave);
+    }
+
+    .filtro-preco__valor {
+      font-weight: 700;
+      color: var(--cor-primaria);
+    }
+
+    .slider-preco {
+      width: 100%;
+      -webkit-appearance: none;
+      appearance: none;
+      height: 4px;
+      background: linear-gradient(to right, var(--cor-primaria) 0%, var(--cor-primaria) 60%, var(--cor-borda) 60%);
+      border-radius: 2px;
+      outline: none;
+      cursor: pointer;
+    }
+
+    .slider-preco::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 18px;
+      height: 18px;
+      background: var(--cor-primaria);
+      border-radius: 50%;
+      border: 3px solid var(--cor-branco);
+      box-shadow: 0 2px 8px rgba(27,58,107,0.3);
+      cursor: pointer;
+      transition: var(--transicao);
+    }
+
+    .slider-preco::-webkit-slider-thumb:hover {
+      transform: scale(1.15);
+    }
+
+    /* Desconto */
+    .filtro-descontos {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .filtro-desc-item {
+      display: flex;
+      align-items: center;
+      gap: 0.55rem;
+      padding: 0.45rem 0.5rem;
+      border-radius: var(--raio);
+      cursor: pointer;
+      transition: var(--transicao);
+    }
+
+    .filtro-desc-item:hover { background: var(--cor-clara); }
+
+    .filtro-desc-item input {
+      accent-color: var(--cor-desconto);
+      width: 15px;
+      height: 15px;
+      cursor: pointer;
+    }
+
+    .filtro-desc-item label {
+      font-size: 0.88rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .desc-badge-mini {
+      background: var(--cor-desconto);
+      color: white;
+      font-size: 0.68rem;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 50px;
+    }
+
+    /* --- GRID DE PRODUTOS --- */
+    .catalogo-grid__header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+
+    .catalogo-grid__total {
+      font-size: 0.9rem;
+      color: var(--cor-texto-suave);
+    }
+
+    .catalogo-grid__total strong {
+      color: var(--cor-primaria);
+    }
+
+    .view-toggle {
+      display: flex;
+      gap: 0.35rem;
+    }
+
+    .view-btn {
+      width: 36px;
+      height: 36px;
+      border: 2px solid var(--cor-borda);
+      border-radius: var(--raio);
+      background: var(--cor-branco);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: var(--transicao);
+      font-size: 1rem;
+    }
+
+    .view-btn.ativo,
+    .view-btn:hover {
+      border-color: var(--cor-primaria);
+      background: var(--cor-primaria);
+      color: white;
+    }
+
+    /* Tags de filtro ativo */
+    .filtros-ativos {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1.2rem;
+    }
+
+    .filtro-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.3rem 0.8rem;
+      background: rgba(27,58,107,0.08);
+      border: 1px solid var(--cor-primaria);
+      border-radius: 50px;
+      font-size: 0.8rem;
+      color: var(--cor-primaria);
+      font-weight: 600;
+    }
+
+    .filtro-tag button {
+      background: none;
+      border: none;
+      color: var(--cor-primaria);
+      cursor: pointer;
+      font-size: 0.9rem;
+      line-height: 1;
+      padding: 0;
+    }
+
+    /* Paginação */
+    .paginacao {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-top: 3rem;
+    }
+
+    .paginacao__btn {
+      width: 40px;
+      height: 40px;
+      border: 2px solid var(--cor-borda);
+      border-radius: var(--raio);
+      background: var(--cor-branco);
+      font-size: 0.9rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: var(--transicao);
+      font-family: var(--fonte-corpo);
+      font-weight: 600;
+      color: var(--cor-texto);
+    }
+
+    .paginacao__btn.ativo,
+    .paginacao__btn:hover {
+      background: var(--cor-primaria);
+      border-color: var(--cor-primaria);
+      color: white;
+    }
+
+    /* RESPONSIVO */
+    @media (max-width: 1024px) {
+      .catalogo-main { grid-template-columns: 240px 1fr; }
+    }
+
+    @media (max-width: 768px) {
+      .catalogo-main { grid-template-columns: 1fr; }
+      .sidebar { position: static; }
+      .busca-bar__inner { flex-wrap: wrap; }
+      .busca-ordenacao { margin-left: 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="header">
+    <div class="header__inner">
+      <a href="index.html" class="header__logo">
+        <div class="header__logo-icon">HS</div>
+        <div class="header__logo-text">
+          <span class="header__logo-name">HS</span>
+          <span class="header__logo-sub">Sistemas Agrícolas</span>
+        </div>
+      </a>
+      <nav class="header__nav">
+        <a href="index.html" class="nav__link">Início</a>
+        <a href="catalogo.html" class="nav__link ativo">Catálogo</a>
+        <a href="index.html#sobre" class="nav__link">Sobre</a>
+        <a href="index.html#garantia" class="nav__link">Suporte</a>
+      </nav>
+      <a href="https://wa.me/5545999999999?text=Olá!%20Gostaria%20de%20mais%20informações." class="header__whatsapp" target="_blank">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.890-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+        </svg>
+        <span>WhatsApp</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- HERO DO CATÁLOGO -->
+  <div class="catalogo-hero">
+    <div class="catalogo-hero__inner">
+      <div class="breadcrumb">
+        <a href="index.html">Início</a>
+        <span>›</span>
+        <span style="color:rgba(255,255,255,0.8)">Catálogo</span>
+      </div>
+      <h1>Catálogo de Produtos</h1>
+      <p>Kits e peças para Case, John Deere, New Holland, Massey Ferguson e mais.</p>
+    </div>
+  </div>
+
+  <!-- BARRA DE BUSCA FIXA -->
+  <div class="busca-bar">
+    <div class="busca-bar__inner">
+      <div class="busca-input-wrap">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z" stroke="#6B7280" stroke-width="2" fill="none" stroke-linecap="round"/>
+        </svg>
+        <input
+          type="search"
+          class="busca-input"
+          id="campoBusca"
+          placeholder="Buscar produto por nome, código ou modelo..."
+          oninput="filtrarProdutos()"
+        />
+      </div>
+
+      <span class="busca-resultados" id="resultadosCount">Mostrando <strong>32</strong> produtos</span>
+
+      <div class="busca-ordenacao">
+        <label for="ordenacao">Ordenar por:</label>
+        <select class="select-estilo" id="ordenacao" onchange="filtrarProdutos()">
+          <option value="relevancia">Relevância</option>
+          <option value="menor-preco">Menor Preço</option>
+          <option value="maior-preco">Maior Preço</option>
+          <option value="maior-desconto">Maior Desconto</option>
+          <option value="nome-az">Nome A–Z</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- LAYOUT PRINCIPAL -->
+  <div class="catalogo-main">
+
+    <!-- SIDEBAR DE FILTROS -->
+    <aside class="sidebar">
+      <div class="sidebar__header">
+        <h3>🎛️ Filtros</h3>
+        <button class="sidebar__limpar" onclick="limparFiltros()">Limpar tudo</button>
+      </div>
+
+      <!-- Categorias -->
+      <div class="filtro-grupo">
+        <div class="filtro-grupo__titulo aberto" onclick="toggleFiltro(this)">Categoria</div>
+        <div class="filtro-cats">
+          <div class="filtro-cat-item ativo" onclick="toggleCategoria(this)">
+            <input type="checkbox" checked />
+            <label class="filtro-cat-label">
+              <span class="filtro-cat-check"></span>
+              Kits Case
+            </label>
+            <span class="filtro-cat-count">6</span>
+          </div>
+          <div class="filtro-cat-item" onclick="toggleCategoria(this)">
+            <input type="checkbox" />
+            <label class="filtro-cat-label">
+              <span class="filtro-cat-check"></span>
+              Kits John Deere
+            </label>
+            <span class="filtro-cat-count">6</span>
+          </div>
+          <div class="filtro-cat-item" onclick="toggleCategoria(this)">
+            <input type="checkbox" />
+            <label class="filtro-cat-label">
+              <span class="filtro-cat-check"></span>
+              Kits New Holland
+            </label>
+            <span class="filtro-cat-count">8</span>
+          </div>
+          <div class="filtro-cat-item" onclick="toggleCategoria(this)">
+            <input type="checkbox" />
+            <label class="filtro-cat-label">
+              <span class="filtro-cat-check"></span>
+              Massey Ferguson
+            </label>
+            <span class="filtro-cat-count">5</span>
+          </div>
+          <div class="filtro-cat-item" onclick="toggleCategoria(this)">
+            <input type="checkbox" />
+            <label class="filtro-cat-label">
+              <span class="filtro-cat-check"></span>
+              Peças e Sensores
+            </label>
+            <span class="filtro-cat-count">7</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sub-categoria (tipo de cultura) -->
+      <div class="filtro-grupo">
+        <div class="filtro-grupo__titulo aberto" onclick="toggleFiltro(this)">Tipo de Cultura</div>
+        <div class="filtro-cats">
+          <div class="filtro-cat-item" onclick="toggleCategoria(this)">
+            <input type="checkbox" />
+            <label class="filtro-cat-label">
+              <span class="filtro-cat-check"></span>
+              Plataforma de Milho
+            </label>
+            <span class="filtro-cat-count">12</span>
+          </div>
+          <div class="filtro-cat-item" onclick="toggleCategoria(this)">
+            <input type="checkbox" />
+            <label class="filtro-cat-label">
+              <span class="filtro-cat-check"></span>
+              Plataforma de Soja
+            </label>
+            <span class="filtro-cat-count">10</span>
+          </div>
+          <div class="filtro-cat-item" onclick="toggleCategoria(this)">
+            <input type="checkbox" />
+            <label class="filtro-cat-label">
+              <span class="filtro-cat-check"></span>
+              Plataforma de Trigo
+            </label>
+            <span class="filtro-cat-count">5</span>
+          </div>
+          <div class="filtro-cat-item" onclick="toggleCategoria(this)">
+            <input type="checkbox" />
+            <label class="filtro-cat-label">
+              <span class="filtro-cat-check"></span>
+              Alteração de Módulo
+            </label>
+            <span class="filtro-cat-count">3</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Faixa de Preço -->
+      <div class="filtro-grupo">
+        <div class="filtro-grupo__titulo aberto" onclick="toggleFiltro(this)">Faixa de Preço</div>
+        <div class="filtro-preco">
+          <div class="filtro-preco__range">
+            <span>R$ 0</span>
+            <span class="filtro-preco__valor" id="precoValor">Até R$ 5.000</span>
+          </div>
+          <input
+            type="range"
+            class="slider-preco"
+            id="sliderPreco"
+            min="0"
+            max="10000"
+            value="5000"
+            step="100"
+            oninput="atualizarPreco(this.value)"
+          />
+          <div style="display:flex; justify-content:space-between; font-size:0.78rem; color:var(--cor-texto-suave)">
+            <span>R$ 0</span>
+            <span>R$ 10.000</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Descontos -->
+      <div class="filtro-grupo">
+        <div class="filtro-grupo__titulo aberto" onclick="toggleFiltro(this)">Desconto</div>
+        <div class="filtro-descontos">
+          <div class="filtro-desc-item">
+            <input type="radio" name="desconto" id="desc-qualquer" value="qualquer" checked />
+            <label for="desc-qualquer">Qualquer desconto</label>
+          </div>
+          <div class="filtro-desc-item">
+            <input type="radio" name="desconto" id="desc-5" value="5" />
+            <label for="desc-5">
+              <span class="desc-badge-mini">5%+</span>
+              Acima de 5%
+            </label>
+          </div>
+          <div class="filtro-desc-item">
+            <input type="radio" name="desconto" id="desc-10" value="10" />
+            <label for="desc-10">
+              <span class="desc-badge-mini">10%+</span>
+              Acima de 10%
+            </label>
+          </div>
+          <div class="filtro-desc-item">
+            <input type="radio" name="desconto" id="desc-20" value="20" />
+            <label for="desc-20">
+              <span class="desc-badge-mini">20%+</span>
+              Acima de 20%
+            </label>
+          </div>
+          <div class="filtro-desc-item">
+            <input type="radio" name="desconto" id="desc-apenas" value="apenas" />
+            <label for="desc-apenas">Apenas com desconto</label>
+          </div>
+        </div>
+      </div>
+
+    </aside>
+
+    <!-- GRID DE PRODUTOS -->
+    <main>
+      <!-- Tags de filtros ativos -->
+      <div class="filtros-ativos" id="filtrosAtivos">
+        <span class="filtro-tag">
+          Kits Case
+          <button onclick="this.parentElement.remove()">×</button>
+        </span>
+      </div>
+
+      <div class="catalogo-grid__header">
+        <span class="catalogo-grid__total">
+          Mostrando <strong id="totalProdutos">32</strong> produtos
+        </span>
+        <div class="view-toggle">
+          <button class="view-btn ativo" title="Grade" onclick="setView('grade', this)">⊞</button>
+          <button class="view-btn" title="Lista" onclick="setView('lista', this)">☰</button>
+        </div>
+      </div>
+
+      <div class="produtos-grid" id="produtosGrid">
+
+        <!-- KITS CASE -->
+        <a href="produto.html" class="produto-card">
+          <div class="produto-card__badge">
+            <span class="badge badge--destaque">⭐ Destaque</span>
+          </div>
+          <div class="produto-card__img-wrap">
+            <img src="https://images.unsplash.com/photo-1621600411688-4be93cd68504?w=500" alt="Kit Plataforma Milho" class="produto-card__imagem" onerror="this.style.background='#e8e0d0';this.removeAttribute('src')"/>
+          </div>
+          <div class="produto-card__corpo">
+            <span class="produto-card__codigo">Cód: 5161</span>
+            <h3 class="produto-card__nome">Kit Plataforma de Milho — Case</h3>
+            <span class="produto-card__categoria">Kits Case · Milho</span>
+            <div class="produto-card__precos">
+              <span class="preco-atual">Consulte o preço</span>
+            </div>
+          </div>
+        </a>
+
+        <a href="produto.html" class="produto-card">
+          <div class="produto-card__badge">
+            <span class="badge badge--desconto">−15%</span>
+          </div>
+          <div class="produto-card__img-wrap">
+            <img src="https://images.unsplash.com/photo-1592982537447-7440770cbfc9?w=500" alt="Kit Plataforma Milho" class="produto-card__imagem" onerror="this.style.background='#e8e0d0';this.removeAttribute('src')"/>
+          </div>
+          <div class="produto-card__corpo">
+            <span class="produto-card__codigo">Cód: 5162</span>
+            <h3 class="produto-card__nome">Kit Plataforma de Milho (4 sensores) — Case</h3>
+            <span class="produto-card__categoria">Kits Case · Milho</span>
+            <div class="produto-card__precos">
+              <span class="preco-original">R$ 1.800,00</span>
+              <span class="preco-atual com-desconto">R$ 1.530,00</span>
+            </div>
+          </div>
+        </a>
+
+        <a href="produto.html" class="produto-card">
+          <div class="produto-card__badge"></div>
+          <div class="produto-card__img-wrap">
+            <img src="https://images.unsplash.com/photo-1598965402089-897ce52e8355?w=500" alt="Kit Case" class="produto-card__imagem" onerror="this.style.background='#e8e0d0';this.removeAttribute('src')"/>
+          </div>
+          <div class="produto-card__corpo">
+            <span class="produto-card__codigo">Cód: 5163</span>
+            <h3 class="produto-card__nome">Kit Plataforma Milho c/ Controlador — Case</h3>
+            <span class="produto-card__categoria">Kits Case · Milho</span>
+            <div class="produto-card__precos">
+              <span class="preco-atual">Consulte o preço</span>
+            </div>
+          </div>
+        </a>
+
+        <a href="produto.html" class="produto-card">
+          <div class="produto-card__badge">
+            <span class="badge badge--desconto">−10%</span>
+          </div>
+          <div class="produto-card__img-wrap">
+            <img src="https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=500" alt="Kit Soja Case" class="produto-card__imagem" onerror="this.style.background='#e8e0d0';this.removeAttribute('src')"/>
+          </div>
+          <div class="produto-card__corpo">
+            <span class="produto-card__codigo">Cód: 5164</span>
+            <h3 class="produto-card__nome">Kit Plataforma de Soja — Case 2388/2399</h3>
+            <span class="produto-card__categoria">Kits Case · Soja</span>
+            <div class="produto-card__precos">
+              <span class="preco-original">R$ 2.200,00</span>
+              <span class="preco-atual com-desconto">R$ 1.980,00</span>
+            </div>
+          </div>
+        </a>
+
+        <a href="produto.html" class="produto-card">
+          <div class="produto-card__badge">
+            <span class="badge badge--destaque">⭐ Destaque</span>
+            <span class="badge badge--desconto">−20%</span>
+          </div>
+          <div class="produto-card__img-wrap">
+            <img src="https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=500" alt="Kit Modulo Case" class="produto-card__imagem" onerror="this.style.background='#e8e0d0';this.removeAttribute('src')"/>
+          </div>
+          <div class="produto-card__corpo">
+            <span class="produto-card__codigo">Cód: 5165</span>
+            <h3 class="produto-card__nome">Kit Alteração do Módulo — Case</h3>
+            <span class="produto-card__categoria">Kits Case · Módulos</span>
+            <div class="produto-card__precos">
+              <span class="preco-original">R$ 4.200,00</span>
+              <span class="preco-atual com-desconto">R$ 3.360,00</span>
+            </div>
+          </div>
+        </a>
+
+        <a href="produto.html" class="produto-card">
+          <div class="produto-card__badge"></div>
+          <div class="produto-card__img-wrap">
+            <img src="https://images.unsplash.com/photo-1571986674-9d1deb8d0b9e?w=500" alt="Kit Trigo Case" class="produto-card__imagem" onerror="this.style.background='#e8e0d0';this.removeAttribute('src')"/>
+          </div>
+          <div class="produto-card__corpo">
+            <span class="produto-card__codigo">Cód: 5166</span>
+            <h3 class="produto-card__nome">Kit Plataforma de Trigo — Case</h3>
+            <span class="produto-card__categoria">Kits Case · Trigo</span>
+            <div class="produto-card__precos">
+              <span class="preco-atual">Consulte o preço</span>
+            </div>
+          </div>
+        </a>
+
+        <!-- Sensor de Perda -->
+        <a href="produto.html" class="produto-card">
+          <div class="produto-card__badge">
+            <span class="badge badge--destaque">⭐ Destaque</span>
+          </div>
+          <div class="produto-card__img-wrap">
+            <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=500" alt="Sensor de Perda" class="produto-card__imagem" onerror="this.style.background='#e8e0d0';this.removeAttribute('src')"/>
+          </div>
+          <div class="produto-card__corpo">
+            <span class="produto-card__codigo">Cód: 5186</span>
+            <h3 class="produto-card__nome">Sensor de Perda</h3>
+            <span class="produto-card__categoria">Peças · Sensores</span>
+            <div class="produto-card__precos">
+              <span class="preco-atual">Consulte o preço</span>
+            </div>
+          </div>
+        </a>
+
+        <!-- Controlador -->
+        <a href="produto.html" class="produto-card">
+          <div class="produto-card__badge">
+            <span class="badge badge--destaque">⭐ Destaque</span>
+          </div>
+          <div class="produto-card__img-wrap">
+            <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?w=500" alt="Controlador" class="produto-card__imagem" onerror="this.style.background='#e8e0d0';this.removeAttribute('src')"/>
+          </div>
+          <div class="produto-card__corpo">
+            <span class="produto-card__codigo">Cód: 5190</span>
+            <h3 class="produto-card__nome">Controlador Eletrônico de Plataforma</h3>
+            <span class="produto-card__categoria">Peças · Controladores</span>
+            <div class="produto-card__precos">
+              <span class="preco-atual">Consulte o preço</span>
+            </div>
+          </div>
+        </a>
+
+      </div><!-- /produtos-grid -->
+
+      <!-- Paginação -->
+      <div class="paginacao">
+        <button class="paginacao__btn">‹</button>
+        <button class="paginacao__btn ativo">1</button>
+        <button class="paginacao__btn">2</button>
+        <button class="paginacao__btn">3</button>
+        <button class="paginacao__btn">4</button>
+        <button class="paginacao__btn">›</button>
+      </div>
+
+    </main>
+  </div><!-- /catalogo-main -->
+
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer__inner">
+      <div class="footer__brand">
+        <h3>HS Sistemas Agrícolas</h3>
+        <p>Soluções em tecnologia para o campo. Kits para Case, John Deere, New Holland, Massey Ferguson e muito mais.</p>
+        <br>
+        <a href="https://wa.me/5545999999999" class="btn btn--whatsapp" target="_blank" style="font-size:0.82rem; padding:0.6rem 1.4rem; width:fit-content">
+          📲 Fale pelo WhatsApp
+        </a>
+      </div>
+      <div class="footer__col">
+        <h4>Navegação</h4>
+        <ul>
+          <li><a href="index.html">Página Inicial</a></li>
+          <li><a href="catalogo.html">Catálogo de Produtos</a></li>
+          <li><a href="index.html#sobre">Sobre a Empresa</a></li>
+          <li><a href="index.html#garantia">Suporte & Garantia</a></li>
+        </ul>
+      </div>
+      </div>
+    <div class="footer__bottom">
+      <span>© 2026 HS Sistemas Agrícolas. Todos os direitos reservados.</span>
+      <span class="footer__versicle">Pv. 16:3</span>
+      <a href="admin/login.html" class="footer__admin-link" title="">©</a>
+    </div>
+  </footer>
+
+    <script src="site-dinamico.js"></script></body>
+</html>
+
+
+
+
+
